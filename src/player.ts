@@ -108,6 +108,24 @@ export default class Player {
     );
   };
 
+  private calcCriticalDamage = (move: Move, doer: Player) => {
+    const STAB = doer.Types.includes(move.Type) ? 1.5 : 1;
+
+    return (
+      (((2 * doer.Level + 5) / (doer.Level + 5)) *
+        (((((((2 * doer.Level) / 5 + 2) *
+          move.AttackStat *
+          doer.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
+          this.DefenseStat[move.isSpecial ? "Special" : "Normal"] /
+          50 +
+          2) *
+          STAB) /
+          this.Resistance) *
+          RNG(85, 100))) /
+      100
+    );
+  };
+
   /**
    * @return Whether still alive
    */
