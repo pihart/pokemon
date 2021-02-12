@@ -137,6 +137,8 @@ export default class Player {
       return this.receiveDamage(0);
     }
 
+    // FIXME: only for team B, only limited number of times
+    // Solution: take a constructor param with this limit
     if (this.health < this.MaxHealth / 4 && Math.random() < 108 / 256) {
       this.receiveDamage(-60);
     } else {
