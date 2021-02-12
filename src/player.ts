@@ -1,39 +1,6 @@
 import { Move, MoveLike } from "./moves";
 import Type from "./type";
 
-/*interface Condition {
-  turnsLeft: number;
-  /!**
-   * Take player, do action
-   * @return Whether to continue move
-   *!/
-  execute: Predicate<Player>;
-}*/
-
-/*class Confusion implements Condition {
-  turnsLeft: number;
-
-  constructor(private doer: Player) {
-    this.turnsLeft = Math.floor(RNG(1, 5));
-  }
-
-  execute = (receiver: Player) => {
-    receiver.doDamage(
-      calcDamage(
-        {
-          Type: Type.never,
-          execute(doer: Player, recipient: Player): void {},
-          AttackStat: 40,
-          isSpecial: false,
-        },
-        doer,
-        receiver
-      )
-    );
-    return false;
-  };
-}*/
-
 type NormalSpecial<T = number> = { Normal: T; Special: T };
 
 export default class Player {
@@ -54,7 +21,6 @@ export default class Player {
     this.health = this.MaxHealth;
   }
 
-  // conditions: Condition[];
   private confusion?: {
     turnsLeft: number;
     doer: Player;
