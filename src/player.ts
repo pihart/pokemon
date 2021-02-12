@@ -34,14 +34,18 @@ import Type from "./type";
   };
 }*/
 
+type NormalSpecial<T = number> = { Normal: T; Special: T };
+
 export default class Player {
   private health: number;
+  private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
+  private DefenseStage: NormalSpecial = { Normal: 0, Special: 0 };
 
   constructor(
     private readonly Types: Type[],
-    private readonly Level: number,
-    private readonly AttackPower: (isSpecial: boolean) => number,
-    private readonly DefenseStat: (isSpecial: boolean) => number,
+    public readonly Level: number,
+    private readonly AttackPower: NormalSpecial,
+    private readonly DefenseStat: NormalSpecial,
     private readonly Resistance: number,
     private readonly MaxHealth: number,
     private readonly Moves: Move[]
@@ -54,7 +58,7 @@ export default class Player {
     turnsLeft: number;
     doer: Player;
   };
-  private sleepingTurnsLeft = 0;
+  public sleepingTurnsLeft = 0;
   private poisoned = false;
 
   /**
@@ -76,11 +80,27 @@ export default class Player {
    */
   private calcDamage = (move: MoveLike, doer: Player) => {
     const STAB = doer.Types.includes(move.Type) ? 1.5 : 1;
+    let AttackPower: number;
+    let AttackStage: number;
+    let DefenseStat: number;
+    let DefenseStage: number;
+
+    if (move.isSpecial) {
+      AttackPower = doer.AttackPower.Special;
+      AttackStage = doer.AttackStage.Special;
+      DefenseStat = this.DefenseStat.Special;
+      DefenseStage = this.DefenseStage.Special;
+    } else {
+      AttackPower = doer.AttackPower.Normal;
+      AttackStage = doer.AttackStage.Normal;
+      DefenseStat = this.DefenseStat.Normal;
+      DefenseStage = this.DefenseStage.Normal;
+    }
+    const AttackPowerScaled = AttackPower * Player.getMultiplier(AttackStage);
+    const DefenseStatScaled = DefenseStat * Player.getMultiplier(DefenseStage);
     return (
-      (((((doer.Level * (2 / 5) + 2) *
-        move.AttackStat *
-        doer.AttackPower(move.isSpecial)) /
-        this.DefenseStat(move.isSpecial) /
+      (((((doer.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
+        DefenseStatScaled /
         50 +
         2) *
         STAB) /
@@ -96,7 +116,7 @@ export default class Player {
     if (this.sleepingTurnsLeft) {
       console.log("Sleeping");
       this.sleepingTurnsLeft--;
-      return true;
+      return this.receiveDamage(0);
     }
 
     if (this.confusion?.turnsLeft) {
@@ -146,6 +166,35 @@ export default class Player {
 
     this.poisoned = true;
   };
+
+  /**
+   * Do the following computation:
+   * ```js
+   * if (stage < 0) return 1 / this.getMultiplier(-stage);
+   * switch (stage) {
+      case 0:
+        return 1;
+      case 1:
+        return 1.5;
+      case 2:
+        return 2;
+      case 3:
+        return 2.5;
+      case 4:
+        return 3;
+      case 5:
+        return 3.5;
+      case 6:
+        return 4;
+    }
+   * ```
+   * @param stage Between -6 and 6
+   * @private
+   */
+  private static getMultiplier(stage: number): number {
+    if (stage < 0) return 1 / this.getMultiplier(-stage);
+    return stage / 2 + 1;
+  }
 }
 
 const RNG = (a: number, b: number) => Math.random() * (b - a) + a;
