@@ -16,6 +16,7 @@ export default class Player {
     private readonly Resistance: number,
     private readonly MaxHealth: number,
     private readonly Moves: Move[],
+    private readonly CriticalDamagePct: number,
     private healthMercyLeft: number
   ) {
     this.health = this.MaxHealth;
@@ -33,7 +34,11 @@ export default class Player {
    * @return Whether still alive
    */
   receiveDamagingMove = (move: MoveLike, doer: Player) =>
-    this.receiveDamage(this.calcDamage(move, doer));
+    this.receiveDamage(
+      Math.random() < this.CriticalDamagePct
+        ? this.calcCriticalDamage(move, doer)
+        : this.calcDamage(move, doer)
+    );
 
   /**
    * @return Whether still alive
@@ -74,7 +79,7 @@ export default class Player {
     );
   };
 
-  private calcCriticalDamage = (move: Move, doer: Player) => {
+  private calcCriticalDamage = (move: MoveLike, doer: Player) => {
     const STAB = doer.Types.includes(move.Type) ? 1.5 : 1;
 
     return (
