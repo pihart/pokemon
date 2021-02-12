@@ -76,9 +76,6 @@ export default class Player {
     return this.health > 0;
   };
 
-  /**
-   * @return Whether still alive
-   */
   private calcDamage = (move: MoveLike, doer: Player) => {
     const STAB = doer.Types.includes(move.Type) ? 1.5 : 1;
     let AttackPower: number;
