@@ -49,6 +49,12 @@ export default class Player {
   };
 
   private calcDamage = (move: MoveLike, doer: Player) => {
+    /**
+     * Same Type Attack Bonus
+     *
+     * If the Player has the same type as the move being used,
+     * they get a 50% damage bonus
+     */
     const STAB = doer.Types.includes(move.Type) ? 1.5 : 1;
     let AttackPower: number;
     let AttackStage: number;
