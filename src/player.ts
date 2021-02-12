@@ -60,6 +60,7 @@ export default class Player {
   };
   public sleepingTurnsLeft = 0;
   private poisoned = false;
+  private paralyzed = false;
 
   /**
    * @return Whether still alive
@@ -132,6 +133,10 @@ export default class Player {
       console.log("Confusion safe");
     }
 
+    if (this.paralyzed && Math.random() < 0.25) {
+      return this.receiveDamage(0);
+    }
+
     if (this.health < this.MaxHealth / 4 && Math.random() < 108 / 256) {
       this.receiveDamage(-60);
     } else {
@@ -156,13 +161,19 @@ export default class Player {
   };
 
   makeSleep = () => {
-    if (this.sleepingTurnsLeft || this.poisoned) return;
+    if (this.sleepingTurnsLeft || this.poisoned || this.paralyzed) return;
 
     this.sleepingTurnsLeft = Math.floor(RNG(1, 8));
   };
 
   poison = () => {
-    if (this.sleepingTurnsLeft || this.poisoned) return;
+    if (this.sleepingTurnsLeft || this.poisoned || this.paralyzed) return;
+
+    this.poisoned = true;
+  };
+
+  paralyze = () => {
+    if (this.sleepingTurnsLeft || this.poisoned || this.paralyzed) return;
 
     this.poisoned = true;
   };
