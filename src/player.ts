@@ -24,7 +24,7 @@ export default class Player {
 
   private confusion?: {
     turnsLeft: number;
-    doer: Player;
+    actor: Player;
   };
   public sleepingTurnsLeft = 0;
   private poisoned = false;
@@ -33,11 +33,11 @@ export default class Player {
   /**
    * @return Whether still alive
    */
-  receiveDamagingMove = (move: MoveLike, doer: Player) =>
+  receiveDamagingMove = (move: MoveLike, actor: Player) =>
     this.receiveDamage(
       Math.random() < this.CriticalDamagePct
-        ? this.calcCriticalDamage(move, doer)
-        : this.calcDamage(move, doer)
+        ? this.calcCriticalDamage(move, actor)
+        : this.calcDamage(move, actor)
     );
 
   /**
@@ -48,34 +48,34 @@ export default class Player {
     return this.health > 0;
   };
 
-  private calcDamage = (move: MoveLike, doer: Player) => {
+  private calcDamage = (move: MoveLike, actor: Player) => {
     /**
      * Same Type Attack Bonus
      *
      * If the Player has the same type as the move being used,
      * they get a 50% damage bonus
      */
-    const STAB = doer.Types.includes(move.Type) ? 1.5 : 1;
+    const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
     let AttackPower: number;
     let AttackStage: number;
     let DefenseStat: number;
     let DefenseStage: number;
 
     if (move.isSpecial) {
-      AttackPower = doer.AttackPower.Special;
-      AttackStage = doer.AttackStage.Special;
+      AttackPower = actor.AttackPower.Special;
+      AttackStage = actor.AttackStage.Special;
       DefenseStat = this.DefenseStat.Special;
       DefenseStage = this.DefenseStage.Special;
     } else {
-      AttackPower = doer.AttackPower.Normal;
-      AttackStage = doer.AttackStage.Normal;
+      AttackPower = actor.AttackPower.Normal;
+      AttackStage = actor.AttackStage.Normal;
       DefenseStat = this.DefenseStat.Normal;
       DefenseStage = this.DefenseStage.Normal;
     }
     const AttackPowerScaled = AttackPower * Player.getMultiplier(AttackStage);
     const DefenseStatScaled = DefenseStat * Player.getMultiplier(DefenseStage);
     return (
-      (((((doer.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
+      (((((actor.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
         DefenseStatScaled /
         50 +
         2) *
@@ -85,14 +85,14 @@ export default class Player {
     );
   };
 
-  private calcCriticalDamage = (move: MoveLike, doer: Player) => {
-    const STAB = doer.Types.includes(move.Type) ? 1.5 : 1;
+  private calcCriticalDamage = (move: MoveLike, actor: Player) => {
+    const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
 
     return (
-      (((2 * doer.Level + 5) / (doer.Level + 5)) *
-        (((((((2 * doer.Level) / 5 + 2) *
+      (((2 * actor.Level + 5) / (actor.Level + 5)) *
+        (((((((2 * actor.Level) / 5 + 2) *
           move.AttackStat *
-          doer.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
+          actor.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
           this.DefenseStat[move.isSpecial ? "Special" : "Normal"] /
           50 +
           2) *
@@ -120,7 +120,7 @@ export default class Player {
         console.log("Doing confusion damage and skipping");
         return this.receiveDamagingMove(
           { AttackStat: 40, isSpecial: false, Type: Type.never },
-          this.confusion.doer
+          this.confusion.actor
         );
       }
       console.log("Confusion safe");
@@ -149,11 +149,11 @@ export default class Player {
     return this.receiveDamage(0);
   };
 
-  confuse = (doer: Player) => {
+  confuse = (actor: Player) => {
     if (this.confusion?.turnsLeft) return;
 
     this.confusion = {
-      doer,
+      actor,
       turnsLeft: Math.floor(RNG(1, 5)),
     };
   };

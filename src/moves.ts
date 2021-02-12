@@ -8,7 +8,7 @@ export interface MoveLike {
 }
 
 export interface Move extends MoveLike {
-  execute: (doer: Player, recipient: Player) => void;
+  execute: (actor: Player, recipient: Player) => void;
 }
 
 const Moves: { [index: string]: Move } = {
@@ -16,52 +16,52 @@ const Moves: { [index: string]: Move } = {
     AttackStat: 0,
     Type: Type.Ghost,
     isSpecial: false,
-    execute: (doer, recipient) => {
-      if (Math.random() < 0.75) recipient.confuse(doer);
+    execute: (actor, recipient) => {
+      if (Math.random() < 0.75) recipient.confuse(actor);
     },
   },
   NightShade: {
     AttackStat: 0,
     Type: Type.Ghost,
     isSpecial: false,
-    execute: (doer, recipient) => {
-      recipient.receiveDamage(doer.Level);
+    execute: (actor, recipient) => {
+      recipient.receiveDamage(actor.Level);
     },
   },
   DreamEater: {
     AttackStat: 100,
     Type: Type.Psychic,
     isSpecial: true,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (recipient.sleepingTurnsLeft && Math.random() < 255 / 256)
-        recipient.receiveDamagingMove(Moves.DreamEater, doer);
+        recipient.receiveDamagingMove(Moves.DreamEater, actor);
     },
   },
   WingAttack: {
     AttackStat: 35,
     Type: Type.Flying,
     isSpecial: false,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 255 / 256)
-        recipient.receiveDamagingMove(Moves.WingAttack, doer);
+        recipient.receiveDamagingMove(Moves.WingAttack, actor);
     },
   },
   Bite: {
     AttackStat: 60,
     Type: Type.Normal,
     isSpecial: false,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 255 / 256)
-        recipient.receiveDamagingMove(Moves.Bite, doer);
+        recipient.receiveDamagingMove(Moves.Bite, actor);
     },
   },
   Acid: {
     AttackStat: 40,
     Type: Type.Poison,
     isSpecial: true,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 255 / 256) {
-        recipient.receiveDamagingMove(Moves.Acid, doer);
+        recipient.receiveDamagingMove(Moves.Acid, actor);
         if (Math.random() < 0.332) {
           recipient.adjustStage(-1, "AttackStage", "Normal");
         }
@@ -72,7 +72,7 @@ const Moves: { [index: string]: Move } = {
     AttackStat: 0,
     Type: Type.Psychic,
     isSpecial: true,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 0.6) recipient.makeSleep();
     },
   },
@@ -80,15 +80,15 @@ const Moves: { [index: string]: Move } = {
     AttackStat: 0,
     Type: Type.Normal,
     isSpecial: true,
-    execute: (doer, recipient) => {
-      if (Math.random() < 0.55) recipient.confuse(doer);
+    execute: (actor, recipient) => {
+      if (Math.random() < 0.55) recipient.confuse(actor);
     },
   },
   Screech: {
     AttackStat: 0,
     Type: Type.Normal,
     isSpecial: true,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 0.85) {
         recipient.adjustStage(-2, "AttackStage", "Normal");
       }
@@ -98,7 +98,7 @@ const Moves: { [index: string]: Move } = {
     AttackStat: 0,
     Type: Type.Normal,
     isSpecial: true,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 0.75) recipient.paralyze();
     },
   },
@@ -106,9 +106,9 @@ const Moves: { [index: string]: Move } = {
     AttackStat: 15,
     Type: Type.Poison,
     isSpecial: false,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 255 / 256) {
-        recipient.receiveDamagingMove(Moves.PoisonSting, doer);
+        recipient.receiveDamagingMove(Moves.PoisonSting, actor);
         if (Math.random() < 0.2) {
           recipient.poison();
         }
@@ -119,7 +119,7 @@ const Moves: { [index: string]: Move } = {
     AttackStat: 0,
     Type: Type.Poison,
     isSpecial: false,
-    execute: (doer, recipient) => {
+    execute: (actor, recipient) => {
       if (Math.random() < 0.85) recipient.poison();
     },
   },
