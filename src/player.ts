@@ -48,7 +48,8 @@ export default class Player {
     private readonly DefenseStat: NormalSpecial,
     private readonly Resistance: number,
     private readonly MaxHealth: number,
-    private readonly Moves: Move[]
+    private readonly Moves: Move[],
+    private healthMercyLeft: number
   ) {
     this.health = this.MaxHealth;
   }
@@ -134,10 +135,13 @@ export default class Player {
       return this.receiveDamage(0);
     }
 
-    // FIXME: only for team B, only limited number of times
-    // Solution: take a constructor param with this limit
-    if (this.health < this.MaxHealth / 4 && Math.random() < 108 / 256) {
+    if (
+      this.health < this.MaxHealth / 4 &&
+      this.healthMercyLeft &&
+      Math.random() < 108 / 256
+    ) {
       this.receiveDamage(-60);
+      this.healthMercyLeft--;
     } else {
       this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
     }
