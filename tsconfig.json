@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "moduleResolution": "Node",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "sourceMap": false,
+    "strict": true,
+    "target": "es2017"
+  },
+  "include": [
+    "./src",
+    ".eslintrc.js"
+  ]
+}

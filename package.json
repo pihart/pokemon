@@ -1,0 +1,13 @@
+{
+  "name": "pokemon",
+  "version": "1.0.0",
+  "description": "I have no idea what this actually does",
+  "main": "dist/index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mehra/ts": "^4.2.3"
+  }
+}
