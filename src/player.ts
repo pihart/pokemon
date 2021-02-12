@@ -167,6 +167,17 @@ export default class Player {
     this.poisoned = true;
   };
 
+  adjustStage = (
+    difference: number,
+    stageAttr: "AttackStage" | "DefenseStage",
+    type: "Normal" | "Special"
+  ) => {
+    this[stageAttr][type] = Math.min(
+      6,
+      Math.max(-6, this[stageAttr][type] + difference)
+    );
+  };
+
   /**
    * Do the following computation:
    * ```js
