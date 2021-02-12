@@ -1,8 +1,10 @@
 export enum Type {
-  never,
-  banana,
-  apple,
-  grape,
+  never, // untyped; should never be given to a player
+  Normal,
+  Ghost,
+  Psychic,
+  Flying,
+  Poison,
 }
 
 export default Type;

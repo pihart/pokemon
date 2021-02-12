@@ -180,6 +180,13 @@ export default class Player {
     this.poisoned = true;
   };
 
+  clearAllStatus = () => {
+    this.confusion = undefined;
+    this.sleepingTurnsLeft = 0;
+    this.poisoned = false;
+    this.paralyzed = false;
+  };
+
   adjustStage = (
     difference: number,
     stageAttr: "AttackStage" | "DefenseStage",
