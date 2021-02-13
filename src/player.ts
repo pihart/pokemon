@@ -158,20 +158,29 @@ export default class Player {
     };
   };
 
+  /**
+   * Whether any in the condition group consisting of sleep, paralysis, poisoning is active.
+   *
+   * Because only one of these can be active at any given time,
+   * and it is a lock, not an override
+   */
+  private sleepParalysisPoisonGroup = () =>
+    this.sleepingTurnsLeft || this.poisoned || this.paralyzed;
+
   makeSleep = () => {
-    if (this.sleepingTurnsLeft || this.poisoned || this.paralyzed) return;
+    if (this.sleepParalysisPoisonGroup()) return;
 
     this.sleepingTurnsLeft = Math.floor(RNG(1, 8));
   };
 
   poison = () => {
-    if (this.sleepingTurnsLeft || this.poisoned || this.paralyzed) return;
+    if (this.sleepParalysisPoisonGroup()) return;
 
     this.poisoned = true;
   };
 
   paralyze = () => {
-    if (this.sleepingTurnsLeft || this.poisoned || this.paralyzed) return;
+    if (this.sleepParalysisPoisonGroup()) return;
 
     this.paralyzed = true;
   };
