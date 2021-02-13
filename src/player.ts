@@ -173,7 +173,7 @@ export default class Player {
   paralyze = () => {
     if (this.sleepingTurnsLeft || this.poisoned || this.paralyzed) return;
 
-    this.poisoned = true;
+    this.paralyzed = true;
   };
 
   clearAllStatus = () => {
