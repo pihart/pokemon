@@ -20,7 +20,7 @@ const {
   Bug,
 } = Type;
 
-const resistances: InvertedMatrix<Type, "weakTo" | "strongTo" | "immuneTo"> = {
+export const Resistances: InvertedMatrix<Type, "weakTo" | "strongTo" | "immuneTo"> = {
   /*
   [defending type (belonging to defending player)] : {
     weakTo: [the defender will receive more damage when attacked by these types],
@@ -72,3 +72,5 @@ const resistances: InvertedMatrix<Type, "weakTo" | "strongTo" | "immuneTo"> = {
     strongTo: [Fire, Water, Grass, Electric],
   },
 };
+
+export default Resistances;

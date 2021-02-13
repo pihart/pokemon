@@ -1,5 +1,6 @@
 import { Move, MoveLike } from "./moves";
 import Type from "./type";
+import Resistances from "./resistances";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
 
@@ -13,7 +14,6 @@ export default class Player {
     public readonly Level: number,
     private readonly AttackPower: NormalSpecial,
     private readonly DefenseStat: NormalSpecial,
-    private readonly Resistance: number,
     private readonly MaxHealth: number,
     private readonly Moves: Move[],
     private readonly CriticalDamagePct: number,
@@ -75,12 +75,12 @@ export default class Player {
     const AttackPowerScaled = AttackPower * Player.getMultiplier(AttackStage);
     const DefenseStatScaled = DefenseStat * Player.getMultiplier(DefenseStage);
     return (
-      (((((actor.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
+      (((actor.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
         DefenseStatScaled /
         50 +
         2) *
-        STAB) /
-        this.Resistance) *
+      STAB *
+      this.getWeakness(move.Type) *
       RNG(0.85, 1)
     );
   };
@@ -90,18 +90,28 @@ export default class Player {
 
     return (
       (((2 * actor.Level + 5) / (actor.Level + 5)) *
-        (((((((2 * actor.Level) / 5 + 2) *
+        (((((2 * actor.Level) / 5 + 2) *
           move.AttackStat *
           actor.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
           this.DefenseStat[move.isSpecial ? "Special" : "Normal"] /
           50 +
           2) *
-          STAB) /
-          this.Resistance) *
+          STAB *
+          this.getWeakness(move.Type) *
           RNG(85, 100))) /
       100
     );
   };
+
+  private getWeakness = (attackingType: Type) =>
+    this.Types.map((defendingType) => {
+      if (Resistances[defendingType].weakTo?.includes(attackingType)) return 2;
+      if (Resistances[defendingType].strongTo?.includes(attackingType))
+        return 1 / 2;
+      if (Resistances[defendingType].immuneTo?.includes(attackingType))
+        return 0;
+      return 1;
+    }).reduce((a, b) => a * b);
 
   /**
    * @return Whether still alive
