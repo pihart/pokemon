@@ -8,6 +8,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mehra/ts": "^4.2.3"
+    "@mehra/ts": "^4.3.0"
   }
 }
