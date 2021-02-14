@@ -17,12 +17,12 @@ export default class Team {
 
   getSpeed = () => this.getCurrentPlayer().getSpeed();
 
-  private getCurrentPlayer = (): Player => this.players[this.currentPlayer];
+  getCurrentPlayer = (): Player => this.players[this.currentPlayer];
 
   /**
    * @return Whether any team member is alive
    */
-  playTurn(opponent: Player): boolean {
+  playTurn(opponentTeam: Team): boolean {
     const die = Math.floor(Math.random() * 256);
 
     // Swap
@@ -40,8 +40,13 @@ export default class Team {
       return true;
     }
 
-    if (!this.getCurrentPlayer().playTurn(die < 128, opponent))
-      return this.terminatePlayer();
+    const { opponentAlive, thisAlive } = this.getCurrentPlayer().playTurn(
+      die < 128,
+      opponentTeam.getCurrentPlayer()
+    );
+
+    if (!opponentAlive) return opponentTeam.terminatePlayer();
+    if (!thisAlive) return this.terminatePlayer();
 
     return true;
   }
