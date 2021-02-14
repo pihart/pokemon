@@ -19,10 +19,11 @@ export default class Team {
 
   getCurrentPlayer = (): Player => this.players[this.currentPlayer];
 
-  /**
-   * @return Whether any team member is alive
-   */
-  playTurn(opponentTeam: Team): boolean {
+  playTurn(
+    opponentTeam: Team
+  ):
+    | { thisActive: true; opponentActive: boolean }
+    | { thisActive: false; opponentActive: true } {
     const die = Math.floor(Math.random() * 256);
 
     // Swap
@@ -37,7 +38,7 @@ export default class Team {
         this.currentPlayer++;
         this.currentPlayer %= this.players.length;
       }
-      return true;
+      return { opponentActive: true, thisActive: true };
     }
 
     const { opponentAlive, thisAlive } = this.getCurrentPlayer().playTurn(
@@ -45,10 +46,18 @@ export default class Team {
       opponentTeam.getCurrentPlayer()
     );
 
-    if (!opponentAlive) return opponentTeam.terminatePlayer();
-    if (!thisAlive) return this.terminatePlayer();
+    if (!opponentAlive)
+      return {
+        opponentActive: opponentTeam.terminatePlayer(),
+        thisActive: true,
+      };
+    if (!thisAlive)
+      return {
+        opponentActive: true,
+        thisActive: this.terminatePlayer(),
+      };
 
-    return true;
+    return { opponentActive: true, thisActive: true };
   }
 
   /**
