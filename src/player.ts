@@ -1,4 +1,4 @@
-import { CustomError } from "@mehra/ts";
+import { Assert, CustomError } from "@mehra/ts";
 
 import { Move, MoveLike } from "./move";
 import Type from "./type";
@@ -117,59 +117,46 @@ export default class Player {
       return 1;
     }).reduce((a, b) => a * b);
 
-  playTurnBeforeSwap = ():
-    | { isAlive: true; turnEnded: boolean }
-    | { isAlive: false } => {
-    if (!this.receiveDamage(0)) {
-      throw new PlayerAlreadyDeadException();
+  /**
+   * @param takeSuperPotion
+   * Whether the die indicates to take the super potion.
+   * It actually happening depends on the current state of the player.
+   * @param opponent
+   * @return Whether still alive
+   */
+  playTurn = (takeSuperPotion: boolean, opponent: Player): boolean => {
+    Assert(this.receiveDamage(0), PlayerAlreadyDeadException);
+
+    if (
+      takeSuperPotion &&
+      this.health < this.MaxHealth / 4 &&
+      this.superPotionsLeft
+    ) {
+      this.receiveDamage(-60);
+      this.superPotionsLeft--;
+      return true;
     }
 
     if (this.sleepingTurnsLeft) {
       console.log("Sleeping");
       this.sleepingTurnsLeft--;
-      return { turnEnded: true, isAlive: true };
+      return true;
     }
 
     if (this.confusion?.turnsLeft) {
       console.log("Confused");
       this.confusion.turnsLeft--;
       if (Math.random() < 0.5) {
-        console.log("Doing confusion damage and skipping");
-        return {
-          turnEnded: true,
-          isAlive: this.receiveDamagingMove(
-            { AttackStat: 40, isSpecial: false, Type: Type.never },
-            this.confusion.actor
-          ),
-        };
+        console.log("Doing confusion damage and ending turn");
+        return this.receiveDamagingMove(
+          { AttackStat: 40, isSpecial: false, Type: Type.never },
+          this.confusion.actor
+        );
       }
       console.log("Confusion safe");
     }
 
-    return {
-      turnEnded: this.paralyzed && Math.random() < 0.25,
-      isAlive: true,
-    };
-  };
-
-  /**
-   * @return Whether still alive
-   */
-  playTurnAfterSwap = (opponent: Player): boolean => {
-    if (!this.receiveDamage(0)) {
-      throw new PlayerAlreadyDeadException();
-    }
-
-    if (
-      this.health < this.MaxHealth / 4 &&
-      this.superPotionsLeft &&
-      Math.random() < 108 / 256
-    ) {
-      this.receiveDamage(-60);
-      this.superPotionsLeft--;
-    } else {
-      this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
-    }
+    this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
 
     if (this.poisoned) {
       console.log("Poisoned");

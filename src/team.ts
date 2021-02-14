@@ -19,27 +19,23 @@ class Team {
    * @return Whether any team member is alive
    */
   playTurn(opponent: Player): boolean {
-    const result = this.players[this.currentPlayer].playTurnBeforeSwap();
-
-    if (!result.isAlive) {
-      return this.terminatePlayer();
-    }
-
-    if (result.turnEnded) {
-      return true;
-    }
+    const die = Math.floor(Math.random() * 256);
 
     // Test swap
-    if (Math.random() < 20 / 256) {
+    if (die < 20) {
       // If part of swapped pair, swap along the pair
       if (this.swappedPlayer !== undefined) {
         const current = this.currentPlayer;
         this.currentPlayer = this.swappedPlayer;
         this.swappedPlayer = current;
       }
+
+      // swap some other way
+
+      return true;
     }
 
-    if (!this.players[this.currentPlayer].playTurnAfterSwap(opponent))
+    if (!this.players[this.currentPlayer].playTurn(die < 128, opponent))
       return this.terminatePlayer();
 
     return true;
