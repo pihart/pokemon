@@ -10,5 +10,5 @@ const B = new Team([
   new Player(Players.Gengar2, false),
 ]);
 
-console.log(new Game(A, B).play);
+console.log(new Game(A, B).play());
 console.timeEnd();

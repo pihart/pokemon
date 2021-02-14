@@ -11,7 +11,7 @@ for (let i = 0; i < 1e6; i++) {
     new Player(Players.Gengar2, false),
   ]);
 
-  if (new Game.play()) {
+  if (new Game(A, B).play()) {
     console.log("success", i);
     break;
   }
