@@ -1,4 +1,4 @@
-import { Move, MoveLike } from "./moves";
+import { Move, MoveLike } from "./move";
 import Type from "./type";
 import Resistances from "./resistances";
 

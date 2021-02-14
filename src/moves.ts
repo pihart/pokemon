@@ -1,15 +1,5 @@
 import Type from "./type";
-import Player from "./player";
-
-export interface MoveLike {
-  AttackStat: number;
-  Type: Type;
-  isSpecial: boolean;
-}
-
-export interface Move extends MoveLike {
-  execute: (actor: Player, recipient: Player) => void;
-}
+import { Move } from "./move";
 
 const Moves: { [index: string]: Move } = {
   ConfuseRay: {
@@ -124,3 +114,5 @@ const Moves: { [index: string]: Move } = {
     },
   },
 };
+
+export default Moves;
