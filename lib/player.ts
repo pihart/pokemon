@@ -8,6 +8,18 @@ type NormalSpecial<T = number> = { Normal: T; Special: T };
 
 class PlayerAlreadyDeadException extends CustomError {}
 
+export interface PlayerOptions {
+  Types: Type[];
+  Level: number;
+  AttackPower: NormalSpecial;
+  DefenseStat: NormalSpecial;
+  SpeedStat: number;
+  MaxHealth: number;
+  Moves: Move[];
+  CriticalDamagePct: number;
+  superPotionsLeft: number;
+}
+
 export default class Player {
   private health: number;
   private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
@@ -15,18 +27,40 @@ export default class Player {
   private stageBoostCounter: number;
   private paralysisSpeedEffectWaived = false;
 
+  private readonly Types: Type[];
+  public readonly Level: number;
+  private readonly AttackPower: NormalSpecial;
+  private readonly DefenseStat: NormalSpecial;
+  private readonly SpeedStat: number;
+  private readonly MaxHealth: number;
+  private readonly Moves: Move[];
+  private readonly CriticalDamagePct: number;
+  private superPotionsLeft: number;
+
   constructor(
-    private readonly Types: Type[],
-    public readonly Level: number,
-    private readonly AttackPower: NormalSpecial,
-    private readonly DefenseStat: NormalSpecial,
-    private readonly SpeedStat: number,
-    private readonly MaxHealth: number,
-    private readonly Moves: Move[],
-    private readonly CriticalDamagePct: number,
-    private superPotionsLeft: number,
+    {
+      AttackPower,
+      CriticalDamagePct,
+      DefenseStat,
+      Level,
+      MaxHealth,
+      Moves,
+      SpeedStat,
+      superPotionsLeft,
+      Types,
+    }: PlayerOptions,
     private readonly isHuman: boolean
   ) {
+    this.AttackPower = AttackPower;
+    this.CriticalDamagePct = CriticalDamagePct;
+    this.DefenseStat = DefenseStat;
+    this.SpeedStat = SpeedStat;
+    this.MaxHealth = MaxHealth;
+    this.Moves = Moves;
+    this.superPotionsLeft = superPotionsLeft;
+    this.Types = Types;
+    this.Level = Level;
+
     this.health = this.MaxHealth;
     this.stageBoostCounter = +isHuman;
   }
