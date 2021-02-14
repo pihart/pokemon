@@ -130,16 +130,22 @@ export default class Player {
       return 1;
     }).reduce((a, b) => a * b);
 
-  getStageBoostBonus = () => (9 / 8) ** this.stageBoostCounter;
+  private getStageBoostBonus = () => (9 / 8) ** this.stageBoostCounter;
+
+  getSpeed = () => this.SpeedStat * this.getStageBoostBonus();
 
   /**
    * @param takeSuperPotion
    * Whether the die indicates to take the super potion.
    * It actually happening depends on the current state of the player.
    * @param opponent
-   * @return Whether still alive
    */
-  playTurn = (takeSuperPotion: boolean, opponent: Player): boolean => {
+  playTurn = (
+    takeSuperPotion: boolean,
+    opponent: Player
+  ):
+    | { thisAlive: true; opponentAlive: boolean }
+    | { thisAlive: false; opponentAlive: true } => {
     Assert(this.receiveDamage(0), PlayerAlreadyDeadException);
 
     if (
@@ -149,13 +155,13 @@ export default class Player {
     ) {
       this.receiveDamage(-60);
       this.superPotionsLeft--;
-      return true;
+      return { thisAlive: true, opponentAlive: true };
     }
 
     if (this.sleepingTurnsLeft) {
       console.log("Sleeping");
       this.sleepingTurnsLeft--;
-      return true;
+      return { thisAlive: true, opponentAlive: true };
     }
 
     if (this.confusion?.turnsLeft) {
@@ -163,26 +169,38 @@ export default class Player {
       this.confusion.turnsLeft--;
       if (Math.random() < 0.5) {
         console.log("Doing confusion damage and ending turn");
-        return this.receiveDamagingMove(
-          { AttackStat: 40, isSpecial: false, Type: Type.never },
-          this.confusion.actor
-        );
+        return {
+          opponentAlive: true,
+          thisAlive: this.receiveDamagingMove(
+            { AttackStat: 40, isSpecial: false, Type: Type.never },
+            this.confusion.actor
+          ),
+        };
       }
       console.log("Confusion safe");
     }
 
     if (this.paralyzed && Math.random() < 0.25) {
-      return this.receiveDamage(0);
+      return { thisAlive: true, opponentAlive: true };
     }
 
-    this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
+    if (
+      !this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent)
+    )
+      return {
+        thisAlive: true,
+        opponentAlive: false,
+      };
 
     if (this.poisoned) {
       console.log("Poisoned");
-      return this.receiveDamage(this.MaxHealth / 16);
+      return {
+        thisAlive: this.receiveDamage(this.MaxHealth / 16),
+        opponentAlive: true,
+      };
     }
 
-    return true;
+    return { thisAlive: true, opponentAlive: true };
   };
 
   confuse = (actor: Player) => {

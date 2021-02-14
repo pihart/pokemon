@@ -8,5 +8,10 @@ export interface MoveLike {
 }
 
 export interface Move extends MoveLike {
-  execute: (actor: Player, recipient: Player) => void;
+  /**
+   * @param actor Person who deals the move
+   * @param recipient Opponent of {@param actor}
+   * @return Whether the recipient is alive
+   */
+  execute: (actor: Player, recipient: Player) => boolean;
 }

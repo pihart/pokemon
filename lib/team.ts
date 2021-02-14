@@ -1,8 +1,8 @@
 import { Assert, NonEmptyArray } from "@mehra/ts";
 import Player from "./player";
 
-class Team {
-  public currentPlayer = 0;
+export default class Team {
+  private currentPlayer = 0;
   /**
    * The index of the player that the current player is swapped with, if any.
    *
@@ -15,10 +15,15 @@ class Team {
 
   constructor(private readonly players: NonEmptyArray<Player>) {}
 
-  /**
-   * @return Whether any team member is alive
-   */
-  playTurn(opponent: Player): boolean {
+  getSpeed = () => this.getCurrentPlayer().getSpeed();
+
+  getCurrentPlayer = (): Player => this.players[this.currentPlayer];
+
+  playTurn(
+    opponentTeam: Team
+  ):
+    | { thisActive: true; opponentActive: boolean }
+    | { thisActive: false; opponentActive: true } {
     const die = Math.floor(Math.random() * 256);
 
     // Swap
@@ -33,13 +38,26 @@ class Team {
         this.currentPlayer++;
         this.currentPlayer %= this.players.length;
       }
-      return true;
+      return { opponentActive: true, thisActive: true };
     }
 
-    if (!this.players[this.currentPlayer].playTurn(die < 128, opponent))
-      return this.terminatePlayer();
+    const { opponentAlive, thisAlive } = this.getCurrentPlayer().playTurn(
+      die < 128,
+      opponentTeam.getCurrentPlayer()
+    );
 
-    return true;
+    if (!opponentAlive)
+      return {
+        opponentActive: opponentTeam.terminatePlayer(),
+        thisActive: true,
+      };
+    if (!thisAlive)
+      return {
+        opponentActive: true,
+        thisActive: this.terminatePlayer(),
+      };
+
+    return { opponentActive: true, thisActive: true };
   }
 
   /**
@@ -49,7 +67,7 @@ class Team {
    * i.e. whether there is another teammate who is alive
    */
   private terminatePlayer() {
-    Assert(!this.players[this.currentPlayer].receiveDamage(0));
+    Assert(!this.getCurrentPlayer().receiveDamage(0));
 
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
