@@ -1,7 +1,8 @@
 const { Team, Player, Players, Game } = require(".");
 
 console.time();
-for (let i = 0; i < 1e6; i++) {
+for (let i = 0; i < 1e7; i++) {
+  if (i % 1e5 === 0) console.log(i);
   const A = new Team([new Player(Players.Weedle, true)]);
   const B = new Team([
     new Player(Players.Gengar1, false),
