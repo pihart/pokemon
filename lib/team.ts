@@ -28,6 +28,7 @@ export default class Team {
 
     // Swap
     if (this.players.length >= 2 && die < 20) {
+      this.getCurrentPlayer().unConfuse();
       // If part of swapped pair, swap along the pair
       if (this.swappedPlayer !== undefined) {
         const current = this.currentPlayer;
