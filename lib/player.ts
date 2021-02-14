@@ -77,12 +77,14 @@ export default class Player {
   /**
    * @return Whether still alive
    */
-  receiveDamagingMove = (move: MoveLike, actor: Player) =>
-    this.receiveDamage(
+  receiveDamagingMove = (move: MoveLike, actor: Player) => {
+    // console.log(move);
+    return this.receiveDamage(
       this.random() < this.CriticalDamagePct
         ? this.calcCriticalDamage(move, actor)
         : this.calcDamage(move, actor)
     );
+  };
 
   /**
    * @return Whether still alive
@@ -92,6 +94,11 @@ export default class Player {
       this.MaxHealth,
       Math.max(0, this.health - Math.floor(damage))
     );
+    // console.log({
+    //   damage: Math.floor(damage),
+    //   isHuman: this.isHuman,
+    //   healthAfter: this.health,
+    // });
     return this.health > 0;
   };
 
@@ -206,7 +213,7 @@ export default class Player {
     }
 
     if (this.confusion?.turnsLeft) {
-      // console.log("Confused");
+      // console.log("Confused", { turnsLeft: this.confusion.turnsLeft });
       this.confusion.turnsLeft--;
       if (this.random() < 0.5) {
         // console.log("Doing confusion damage and ending turn");
@@ -225,13 +232,9 @@ export default class Player {
       return { thisAlive: true, opponentAlive: true };
     }
 
-    if (
-      !this.Moves[Math.floor(this.RNG(0, this.Moves.length))].execute(
-        this,
-        opponent,
-        this.random
-      )
-    )
+    const chosenMove = Math.floor(this.RNG(0, this.Moves.length));
+    // console.log("Attempting move", chosenMove, { isHuman: this.isHuman });
+    if (!this.Moves[chosenMove].execute(this, opponent, this.random))
       return {
         thisAlive: true,
         opponentAlive: false,
@@ -277,7 +280,8 @@ export default class Player {
   };
 
   poison = () => {
-    if (this.sleepParalysisPoisonGroup()) return;
+    if (this.Types.includes(Type.Poison) || this.sleepParalysisPoisonGroup())
+      return;
 
     this.poisoned = true;
   };

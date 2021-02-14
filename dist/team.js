@@ -18,11 +18,23 @@ class Team {
             if (this.swappedPlayer !== undefined) {
                 const current = this.currentPlayer;
                 this.currentPlayer = this.swappedPlayer;
+                // console.log(
+                //   "following existing swap",
+                //   current,
+                //   "with",
+                //   this.currentPlayer
+                // );
                 this.swappedPlayer = current;
             }
             else {
                 this.swappedPlayer = this.currentPlayer;
                 this.currentPlayer++;
+                // console.log(
+                //   "creating new swap",
+                //   this.swappedPlayer,
+                //   "with",
+                //   this.currentPlayer
+                // );
                 this.currentPlayer %= this.players.length;
             }
             return { opponentActive: true, thisActive: true };
@@ -48,6 +60,13 @@ class Team {
      */
     terminatePlayer() {
         ts_1.Assert(!this.getCurrentPlayer().receiveDamage(0));
+        // console.log(
+        //   "active player with index",
+        //   this.currentPlayer,
+        //   "and stats",
+        //   this.getCurrentPlayer(),
+        //   "has died"
+        // );
         // Delete the current player from the array
         this.players.splice(this.currentPlayer, 1);
         if (!this.players.length)
