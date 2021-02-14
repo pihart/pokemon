@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "I have no idea what this actually does",
   "main": "dist/index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "tsc"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
