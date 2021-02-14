@@ -12,6 +12,7 @@ export default class Player {
   private health: number;
   private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
   private DefenseStage: NormalSpecial = { Normal: 0, Special: 0 };
+  private bonusCounter = 1;
 
   constructor(
     private readonly Types: Type[],
@@ -225,6 +226,7 @@ export default class Player {
     stageAttr: "AttackStage" | "DefenseStage",
     type: "Normal" | "Special"
   ) => {
+    this.bonusCounter++;
     this[stageAttr][type] = Math.min(
       6,
       Math.max(-6, this[stageAttr][type] + difference)
