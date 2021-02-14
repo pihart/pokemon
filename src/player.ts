@@ -113,14 +113,11 @@ export default class Player {
       return 1;
     }).reduce((a, b) => a * b);
 
-  /**
-   * @return Whether still alive
-   */
-  playTurn = (opponent: Player): boolean => {
+  playTurnBeforeSwap = (): { turnEnded: boolean; isAlive: boolean } => {
     if (this.sleepingTurnsLeft) {
       console.log("Sleeping");
       this.sleepingTurnsLeft--;
-      return this.receiveDamage(0);
+      return { turnEnded: true, isAlive: this.receiveDamage(0) };
     }
 
     if (this.confusion?.turnsLeft) {
@@ -128,18 +125,27 @@ export default class Player {
       this.confusion.turnsLeft--;
       if (Math.random() < 0.5) {
         console.log("Doing confusion damage and skipping");
-        return this.receiveDamagingMove(
-          { AttackStat: 40, isSpecial: false, Type: Type.never },
-          this.confusion.actor
-        );
+        return {
+          turnEnded: true,
+          isAlive: this.receiveDamagingMove(
+            { AttackStat: 40, isSpecial: false, Type: Type.never },
+            this.confusion.actor
+          ),
+        };
       }
       console.log("Confusion safe");
     }
 
-    if (this.paralyzed && Math.random() < 0.25) {
-      return this.receiveDamage(0);
-    }
+    return {
+      turnEnded: this.paralyzed && Math.random() < 0.25,
+      isAlive: this.receiveDamage(0),
+    };
+  };
 
+  /**
+   * @return Whether still alive
+   */
+  playTurnAfterSwap = (opponent: Player): boolean => {
     if (
       this.health < this.MaxHealth / 4 &&
       this.healthMercyLeft &&
