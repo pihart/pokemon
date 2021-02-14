@@ -2,14 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const ts_1 = require("@mehra/ts");
 class Team {
-    constructor(players) {
+    constructor(players, random) {
         this.players = players;
+        this.random = random;
         this.currentPlayer = 0;
         this.getSpeed = () => this.getCurrentPlayer().getSpeed();
         this.getCurrentPlayer = () => this.players[this.currentPlayer];
     }
     playTurn(opponentTeam) {
-        const die = Math.floor(Math.random() * 256);
+        const die = Math.floor(this.random() * 256);
         // Swap
         if (this.players.length >= 2 && die < 20) {
             this.getCurrentPlayer().unConfuse();

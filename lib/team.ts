@@ -13,7 +13,10 @@ export default class Team {
    */
   private swappedPlayer?: number;
 
-  constructor(private readonly players: NonEmptyArray<Player>) {}
+  constructor(
+    private readonly players: NonEmptyArray<Player>,
+    private random: () => number
+  ) {}
 
   getSpeed = () => this.getCurrentPlayer().getSpeed();
 
@@ -24,7 +27,7 @@ export default class Team {
   ):
     | { thisActive: true; opponentActive: boolean }
     | { thisActive: false; opponentActive: true } {
-    const die = Math.floor(Math.random() * 256);
+    const die = Math.floor(this.random() * 256);
 
     // Swap
     if (this.players.length >= 2 && die < 20) {
@@ -73,7 +76,7 @@ export default class Team {
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
 
-    if(!this.players.length) return false;
+    if (!this.players.length) return false;
 
     if (this.swappedPlayer !== undefined) {
       // Subtract 1 if you shifted the indices by deleting the current player

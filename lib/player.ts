@@ -49,7 +49,8 @@ export default class Player {
       superPotionsLeft,
       Types,
     }: PlayerOptions,
-    private readonly isHuman: boolean
+    private readonly isHuman: boolean,
+    private random: () => number
   ) {
     this.AttackPower = AttackPower;
     this.CriticalDamagePct = CriticalDamagePct;
@@ -78,7 +79,7 @@ export default class Player {
    */
   receiveDamagingMove = (move: MoveLike, actor: Player) =>
     this.receiveDamage(
-      Math.random() < this.CriticalDamagePct
+      this.random() < this.CriticalDamagePct
         ? this.calcCriticalDamage(move, actor)
         : this.calcDamage(move, actor)
     );
@@ -135,7 +136,7 @@ export default class Player {
         2) *
       STAB *
       this.getWeakness(move.Type) *
-      RNG(0.85, 1)
+      this.RNG(0.85, 1)
     );
   };
 
@@ -152,7 +153,7 @@ export default class Player {
           2) *
           STAB *
           this.getWeakness(move.Type) *
-          RNG(85, 100))) /
+          this.RNG(85, 100))) /
       100
     );
   };
@@ -207,7 +208,7 @@ export default class Player {
     if (this.confusion?.turnsLeft) {
       // console.log("Confused");
       this.confusion.turnsLeft--;
-      if (Math.random() < 0.5) {
+      if (this.random() < 0.5) {
         // console.log("Doing confusion damage and ending turn");
         return {
           opponentAlive: true,
@@ -220,12 +221,16 @@ export default class Player {
       // console.log("Confusion safe");
     }
 
-    if (this.paralyzed && Math.random() < 0.25) {
+    if (this.paralyzed && this.random() < 0.25) {
       return { thisAlive: true, opponentAlive: true };
     }
 
     if (
-      !this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent)
+      !this.Moves[Math.floor(this.RNG(0, this.Moves.length))].execute(
+        this,
+        opponent,
+        this.random
+      )
     )
       return {
         thisAlive: true,
@@ -248,7 +253,7 @@ export default class Player {
 
     this.confusion = {
       actor,
-      turnsLeft: Math.floor(RNG(1, 5)),
+      turnsLeft: Math.floor(this.RNG(1, 5)),
     };
   };
 
@@ -268,7 +273,7 @@ export default class Player {
   makeSleep = () => {
     if (this.sleepParalysisPoisonGroup()) return;
 
-    this.sleepingTurnsLeft = Math.floor(RNG(1, 8));
+    this.sleepingTurnsLeft = Math.floor(this.RNG(1, 8));
   };
 
   poison = () => {
@@ -341,6 +346,6 @@ export default class Player {
     if (stage < 0) return 1 / this.getMultiplier(-stage);
     return stage / 2 + 1;
   }
-}
 
-const RNG = (a: number, b: number) => Math.random() * (b - a) + a;
+  private RNG = (a: number, b: number) => this.random() * (b - a) + a;
+}

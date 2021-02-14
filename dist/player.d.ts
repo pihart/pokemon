@@ -17,6 +17,7 @@ export interface PlayerOptions {
 }
 export default class Player {
     private readonly isHuman;
+    private random;
     private health;
     private AttackStage;
     private DefenseStage;
@@ -31,7 +32,7 @@ export default class Player {
     private readonly Moves;
     private readonly CriticalDamagePct;
     private superPotionsLeft;
-    constructor({ AttackPower, CriticalDamagePct, DefenseStat, Level, MaxHealth, Moves, SpeedStat, superPotionsLeft, Types, }: PlayerOptions, isHuman: boolean);
+    constructor({ AttackPower, CriticalDamagePct, DefenseStat, Level, MaxHealth, Moves, SpeedStat, superPotionsLeft, Types, }: PlayerOptions, isHuman: boolean, random: () => number);
     private confusion?;
     sleepingTurnsLeft: number;
     private poisoned;
@@ -103,5 +104,6 @@ export default class Player {
      * @private
      */
     private static getMultiplier;
+    private RNG;
 }
 export {};

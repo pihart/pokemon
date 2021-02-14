@@ -2,6 +2,7 @@ import { NonEmptyArray } from "@mehra/ts";
 import Player from "./player";
 export default class Team {
     private readonly players;
+    private random;
     private currentPlayer;
     /**
      * The index of the player that the current player is swapped with, if any.
@@ -12,7 +13,7 @@ export default class Team {
      * if the active player is not in a swapped pair, then nobody else is either.
      */
     private swappedPlayer?;
-    constructor(players: NonEmptyArray<Player>);
+    constructor(players: NonEmptyArray<Player>, random: () => number);
     getSpeed: () => number;
     getCurrentPlayer: () => Player;
     playTurn(opponentTeam: Team): {
