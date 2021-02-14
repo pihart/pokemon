@@ -12,7 +12,7 @@ export default class Player {
   private health: number;
   private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
   private DefenseStage: NormalSpecial = { Normal: 0, Special: 0 };
-  private stageBoostCounter = 1;
+  private stageBoostCounter: number;
 
   constructor(
     private readonly Types: Type[],
@@ -23,9 +23,11 @@ export default class Player {
     private readonly MaxHealth: number,
     private readonly Moves: Move[],
     private readonly CriticalDamagePct: number,
-    private superPotionsLeft: number
+    private superPotionsLeft: number,
+    private readonly isHuman: boolean
   ) {
     this.health = this.MaxHealth;
+    this.stageBoostCounter = +isHuman;
   }
 
   private confusion?: {
@@ -255,7 +257,7 @@ export default class Player {
     stageAttr: "AttackStage" | "DefenseStage",
     type: "Normal" | "Special"
   ) => {
-    this.stageBoostCounter++;
+    if (this.isHuman) this.stageBoostCounter++;
     this[stageAttr][type] = Math.min(
       6,
       Math.max(-6, this[stageAttr][type] + difference)
