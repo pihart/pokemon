@@ -35,7 +35,7 @@ for (let i = 0; i < maxNumIters; i++) {
       "avi.log",
       `${new Date().toISOString()} success: ${i} randoms: ${JSON.stringify(
         randomLog
-      )}`
+      )}\n`
     );
     break;
   }
