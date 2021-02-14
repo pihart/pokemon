@@ -33,7 +33,9 @@ for (let i = 0; i < maxNumIters; i++) {
     console.log("success", i, randomLog);
     require("fs").appendFileSync(
       "avi.log",
-      `${new Date().toISOString()} success: ${i}`
+      `${new Date().toISOString()} success: ${i} randoms: ${JSON.stringify(
+        randomLog
+      )}`
     );
     break;
   }
