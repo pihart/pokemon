@@ -143,7 +143,9 @@ export default class Player {
   playTurn = (
     takeSuperPotion: boolean,
     opponent: Player
-  ): { thisAlive: boolean; opponentAlive: boolean } => {
+  ):
+    | { thisAlive: true; opponentAlive: boolean }
+    | { thisAlive: false; opponentAlive: true } => {
     Assert(this.receiveDamage(0), PlayerAlreadyDeadException);
 
     if (
