@@ -1,8 +1,12 @@
+import { Assert, CustomError } from "@mehra/ts";
+
 import { Move, MoveLike } from "./move";
 import Type from "./type";
 import Resistances from "./resistances";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
+
+class PlayerAlreadyDeadException extends CustomError {}
 
 export default class Player {
   private health: number;
@@ -17,7 +21,7 @@ export default class Player {
     private readonly MaxHealth: number,
     private readonly Moves: Move[],
     private readonly CriticalDamagePct: number,
-    private healthMercyLeft: number
+    private superPotionsLeft: number
   ) {
     this.health = this.MaxHealth;
   }
@@ -114,20 +118,36 @@ export default class Player {
     }).reduce((a, b) => a * b);
 
   /**
+   * @param takeSuperPotion
+   * Whether the die indicates to take the super potion.
+   * It actually happening depends on the current state of the player.
+   * @param opponent
    * @return Whether still alive
    */
-  playTurn = (opponent: Player): boolean => {
+  playTurn = (takeSuperPotion: boolean, opponent: Player): boolean => {
+    Assert(this.receiveDamage(0), PlayerAlreadyDeadException);
+
+    if (
+      takeSuperPotion &&
+      this.health < this.MaxHealth / 4 &&
+      this.superPotionsLeft
+    ) {
+      this.receiveDamage(-60);
+      this.superPotionsLeft--;
+      return true;
+    }
+
     if (this.sleepingTurnsLeft) {
       console.log("Sleeping");
       this.sleepingTurnsLeft--;
-      return this.receiveDamage(0);
+      return true;
     }
 
     if (this.confusion?.turnsLeft) {
       console.log("Confused");
       this.confusion.turnsLeft--;
       if (Math.random() < 0.5) {
-        console.log("Doing confusion damage and skipping");
+        console.log("Doing confusion damage and ending turn");
         return this.receiveDamagingMove(
           { AttackStat: 40, isSpecial: false, Type: Type.never },
           this.confusion.actor
@@ -140,23 +160,14 @@ export default class Player {
       return this.receiveDamage(0);
     }
 
-    if (
-      this.health < this.MaxHealth / 4 &&
-      this.healthMercyLeft &&
-      Math.random() < 108 / 256
-    ) {
-      this.receiveDamage(-60);
-      this.healthMercyLeft--;
-    } else {
-      this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
-    }
+    this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
 
     if (this.poisoned) {
       console.log("Poisoned");
       return this.receiveDamage(this.MaxHealth / 16);
     }
 
-    return this.receiveDamage(0);
+    return true;
   };
 
   confuse = (actor: Player) => {
@@ -166,6 +177,10 @@ export default class Player {
       actor,
       turnsLeft: Math.floor(RNG(1, 5)),
     };
+  };
+
+  unConfuse = () => {
+    this.confusion = undefined;
   };
 
   /**
@@ -196,7 +211,7 @@ export default class Player {
   };
 
   clearAllStatus = () => {
-    this.confusion = undefined;
+    this.unConfuse();
     this.sleepingTurnsLeft = 0;
     this.poisoned = false;
     this.paralyzed = false;
