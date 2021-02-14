@@ -199,16 +199,16 @@ export default class Player {
     }
 
     if (this.sleepingTurnsLeft) {
-      console.log("Sleeping");
+      // console.log("Sleeping");
       this.sleepingTurnsLeft--;
       return { thisAlive: true, opponentAlive: true };
     }
 
     if (this.confusion?.turnsLeft) {
-      console.log("Confused");
+      // console.log("Confused");
       this.confusion.turnsLeft--;
       if (Math.random() < 0.5) {
-        console.log("Doing confusion damage and ending turn");
+        // console.log("Doing confusion damage and ending turn");
         return {
           opponentAlive: true,
           thisAlive: this.receiveDamagingMove(
@@ -217,7 +217,7 @@ export default class Player {
           ),
         };
       }
-      console.log("Confusion safe");
+      // console.log("Confusion safe");
     }
 
     if (this.paralyzed && Math.random() < 0.25) {
@@ -233,7 +233,7 @@ export default class Player {
       };
 
     if (this.poisoned) {
-      console.log("Poisoned");
+      // console.log("Poisoned");
       return {
         thisAlive: this.receiveDamage(this.MaxHealth / 16),
         opponentAlive: true,
