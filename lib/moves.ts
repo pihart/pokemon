@@ -122,19 +122,21 @@ const Moves: { [index: string]: Move } = {
       return true;
     },
   },
-Haze: {
-  AttackStat: 0,
-  Type: Type.Ice,
-  isSpecial: true,
-  execute: (actor, recipient) => {
-    if (Math.random() < 255 / 256) {
-      recipient.unConfuse();
-      actor.forceResetStages();
-      recipient.forceResetStages();
-    }
-    return true;
+  Haze: {
+    AttackStat: 0,
+    Type: Type.Ice,
+    isSpecial: true,
+    execute: (actor, recipient) => {
+      if (Math.random() < 255 / 256) {
+        recipient.unConfuse();
+        actor.forceResetStages();
+        recipient.forceResetStages();
+        actor.waiveParalysisSpeedEffect();
+        recipient.waiveParalysisSpeedEffect();
+      }
+      return true;
+    },
   },
-},
 };
 
 export default Moves;

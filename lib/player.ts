@@ -13,6 +13,7 @@ export default class Player {
   private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
   private DefenseStage: NormalSpecial = { Normal: 0, Special: 0 };
   private stageBoostCounter: number;
+  private paralysisSpeedEffectWaived = false;
 
   constructor(
     private readonly Types: Type[],
@@ -134,7 +135,10 @@ export default class Player {
 
   private getStageBoostBonus = () => (9 / 8) ** this.stageBoostCounter;
 
-  getSpeed = () => this.SpeedStat * this.getStageBoostBonus();
+  getSpeed = () =>
+    this.SpeedStat *
+    this.getStageBoostBonus() *
+    (this.paralyzed && !this.paralysisSpeedEffectWaived ? 1 / 4 : 1);
 
   /**
    * @param takeSuperPotion
@@ -243,6 +247,15 @@ export default class Player {
     if (this.sleepParalysisPoisonGroup()) return;
 
     this.paralyzed = true;
+  };
+
+  waiveParalysisSpeedEffect = () => {
+    this.paralysisSpeedEffectWaived = true;
+  };
+
+  deParalyze = () => {
+    this.paralyzed = false;
+    this.paralysisSpeedEffectWaived = false;
   };
 
   adjustStage = (
