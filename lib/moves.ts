@@ -8,15 +8,14 @@ const Moves: { [index: string]: Move } = {
     isSpecial: false,
     execute: (actor, recipient) => {
       if (Math.random() < 0.75) recipient.confuse(actor);
+      return true;
     },
   },
   NightShade: {
     AttackStat: 0,
     Type: Type.Ghost,
     isSpecial: false,
-    execute: (actor, recipient) => {
-      recipient.receiveDamage(actor.Level);
-    },
+    execute: (actor, recipient) => recipient.receiveDamage(actor.Level),
   },
   DreamEater: {
     AttackStat: 100,
@@ -24,7 +23,8 @@ const Moves: { [index: string]: Move } = {
     isSpecial: true,
     execute: (actor, recipient) => {
       if (recipient.sleepingTurnsLeft && Math.random() < 255 / 256)
-        recipient.receiveDamagingMove(Moves.DreamEater, actor);
+        return recipient.receiveDamagingMove(Moves.DreamEater, actor);
+      return true;
     },
   },
   WingAttack: {
@@ -33,7 +33,8 @@ const Moves: { [index: string]: Move } = {
     isSpecial: false,
     execute: (actor, recipient) => {
       if (Math.random() < 255 / 256)
-        recipient.receiveDamagingMove(Moves.WingAttack, actor);
+        return recipient.receiveDamagingMove(Moves.WingAttack, actor);
+      return true;
     },
   },
   Bite: {
@@ -42,7 +43,8 @@ const Moves: { [index: string]: Move } = {
     isSpecial: false,
     execute: (actor, recipient) => {
       if (Math.random() < 255 / 256)
-        recipient.receiveDamagingMove(Moves.Bite, actor);
+        return recipient.receiveDamagingMove(Moves.Bite, actor);
+      return true;
     },
   },
   Acid: {
@@ -51,11 +53,12 @@ const Moves: { [index: string]: Move } = {
     isSpecial: true,
     execute: (actor, recipient) => {
       if (Math.random() < 255 / 256) {
-        recipient.receiveDamagingMove(Moves.Acid, actor);
         if (Math.random() < 0.332) {
           recipient.adjustStage(-1, "AttackStage", "Normal");
         }
+        return recipient.receiveDamagingMove(Moves.Acid, actor);
       }
+      return true;
     },
   },
   Hypnosis: {
@@ -64,6 +67,7 @@ const Moves: { [index: string]: Move } = {
     isSpecial: true,
     execute: (actor, recipient) => {
       if (Math.random() < 0.6) recipient.makeSleep();
+      return true;
     },
   },
   Supersonic: {
@@ -72,6 +76,7 @@ const Moves: { [index: string]: Move } = {
     isSpecial: true,
     execute: (actor, recipient) => {
       if (Math.random() < 0.55) recipient.confuse(actor);
+      return true;
     },
   },
   Screech: {
@@ -82,6 +87,7 @@ const Moves: { [index: string]: Move } = {
       if (Math.random() < 0.85) {
         recipient.adjustStage(-2, "AttackStage", "Normal");
       }
+      return true;
     },
   },
   Glare: {
@@ -90,6 +96,7 @@ const Moves: { [index: string]: Move } = {
     isSpecial: true,
     execute: (actor, recipient) => {
       if (Math.random() < 0.75) recipient.paralyze();
+      return true;
     },
   },
   PoisonSting: {
@@ -98,11 +105,12 @@ const Moves: { [index: string]: Move } = {
     isSpecial: false,
     execute: (actor, recipient) => {
       if (Math.random() < 255 / 256) {
-        recipient.receiveDamagingMove(Moves.PoisonSting, actor);
         if (Math.random() < 0.2) {
           recipient.poison();
         }
+        return recipient.receiveDamagingMove(Moves.PoisonSting, actor);
       }
+      return true;
     },
   },
   Toxic: {
@@ -111,6 +119,7 @@ const Moves: { [index: string]: Move } = {
     isSpecial: false,
     execute: (actor, recipient) => {
       if (Math.random() < 0.85) recipient.poison();
+      return true;
     },
   },
 };
