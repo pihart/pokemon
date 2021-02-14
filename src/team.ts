@@ -4,7 +4,7 @@ import Player from "./player";
 class Team {
   public currentPlayer = 0;
 
-  constructor(private readonly players: NonEmptyArray<Player>) {}
+  constructor(private readonly players: Readonly<NonEmptyArray<Player>>) {}
 
   /**
    * @return Whether any team member is alive
@@ -34,8 +34,16 @@ class Team {
    * @return Whether the game is still active
    */
   private terminatePlayer() {
-    this.players.splice(this.currentPlayer, 1);
-    this.currentPlayer %= this.players.length;
-    return this.players.length >= 0;
+    const { length } = this.players;
+
+    for (let offset = 1; offset < length; offset++) {
+      const index = (this.currentPlayer + offset) % length;
+      if (this.players[index].receiveDamage(0)) {
+        this.currentPlayer = index;
+        return true;
+      }
+    }
+
+    return false;
   }
 }
