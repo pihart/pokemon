@@ -174,6 +174,10 @@ export default class Player {
     };
   };
 
+  unConfuse = () => {
+    this.confusion = undefined;
+  };
+
   /**
    * Whether any in the condition group consisting of sleep, paralysis, poisoning is active.
    *
@@ -202,7 +206,7 @@ export default class Player {
   };
 
   clearAllStatus = () => {
-    this.confusion = undefined;
+    this.unConfuse();
     this.sleepingTurnsLeft = 0;
     this.poisoned = false;
     this.paralyzed = false;
