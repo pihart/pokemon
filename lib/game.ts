@@ -6,6 +6,17 @@ class Game {
   /**
    * @return Whether Team A wins
    */
+  play(): boolean {
+    let AWins;
+    while (AWins === undefined) {
+      AWins = this.playRound();
+    }
+    return AWins;
+  }
+
+  /**
+   * @return Whether Team A wins
+   */
   private playRound(): boolean | void {
     const { teamA: A, teamB: B } = this;
 
