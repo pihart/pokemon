@@ -245,13 +245,6 @@ export default class Player {
     this.paralyzed = true;
   };
 
-  clearAllStatus = () => {
-    this.unConfuse();
-    this.sleepingTurnsLeft = 0;
-    this.poisoned = false;
-    this.paralyzed = false;
-  };
-
   adjustStage = (
     difference: number,
     stageAttr: "AttackStage" | "DefenseStage",
