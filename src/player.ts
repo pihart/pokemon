@@ -1,8 +1,12 @@
+import { CustomError } from "@mehra/ts";
+
 import { Move, MoveLike } from "./move";
 import Type from "./type";
 import Resistances from "./resistances";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
+
+class PlayerAlreadyDeadException extends CustomError {}
 
 export default class Player {
   private health: number;
@@ -114,10 +118,14 @@ export default class Player {
     }).reduce((a, b) => a * b);
 
   playTurnBeforeSwap = (): { turnEnded: boolean; isAlive: boolean } => {
+    if (!this.receiveDamage(0)) {
+      throw new PlayerAlreadyDeadException();
+    }
+
     if (this.sleepingTurnsLeft) {
       console.log("Sleeping");
       this.sleepingTurnsLeft--;
-      return { turnEnded: true, isAlive: this.receiveDamage(0) };
+      return { turnEnded: true, isAlive: true };
     }
 
     if (this.confusion?.turnsLeft) {
@@ -138,7 +146,7 @@ export default class Player {
 
     return {
       turnEnded: this.paralyzed && Math.random() < 0.25,
-      isAlive: this.receiveDamage(0),
+      isAlive: true,
     };
   };
 
@@ -146,6 +154,10 @@ export default class Player {
    * @return Whether still alive
    */
   playTurnAfterSwap = (opponent: Player): boolean => {
+    if (!this.receiveDamage(0)) {
+      throw new PlayerAlreadyDeadException();
+    }
+
     if (
       this.health < this.MaxHealth / 4 &&
       this.healthMercyLeft &&
@@ -162,7 +174,7 @@ export default class Player {
       return this.receiveDamage(this.MaxHealth / 16);
     }
 
-    return this.receiveDamage(0);
+    return true;
   };
 
   confuse = (actor: Player) => {
