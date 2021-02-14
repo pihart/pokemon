@@ -22,16 +22,17 @@ class Team {
     const die = Math.floor(Math.random() * 256);
 
     // Swap
-    if (die < 20) {
+    if (this.players.length >= 2 && die < 20) {
       // If part of swapped pair, swap along the pair
       if (this.swappedPlayer !== undefined) {
         const current = this.currentPlayer;
         this.currentPlayer = this.swappedPlayer;
         this.swappedPlayer = current;
+      } else {
+        this.swappedPlayer = this.currentPlayer;
+        this.currentPlayer++;
+        this.currentPlayer %= this.players.length;
       }
-
-      // swap some other way
-
       return true;
     }
 
