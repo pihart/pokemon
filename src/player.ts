@@ -156,6 +156,10 @@ export default class Player {
       console.log("Confusion safe");
     }
 
+    if (this.paralyzed && Math.random() < 0.25) {
+      return this.receiveDamage(0);
+    }
+
     this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
 
     if (this.poisoned) {
