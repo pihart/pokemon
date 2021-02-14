@@ -73,18 +73,18 @@ export default class Team {
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
 
+    if(!this.players.length) return false;
+
     if (this.swappedPlayer !== undefined) {
       // Subtract 1 if you shifted the indices by deleting the current player
       let offset = this.swappedPlayer > this.currentPlayer ? 1 : 0;
       this.currentPlayer = this.swappedPlayer - offset;
 
       this.swappedPlayer = undefined;
-
-      // swapped player is always alive, by definition
-      return true;
     }
 
     this.currentPlayer %= this.players.length;
-    return this.players.length >= 0;
+
+    return true;
   }
 }
