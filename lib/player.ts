@@ -257,6 +257,15 @@ export default class Player {
     );
   };
 
+  forceResetStages = () => {
+    this.AttackStage.Normal = 0;
+    this.AttackStage.Special = 0;
+    this.DefenseStage.Normal = 0;
+    this.DefenseStage.Special = 0;
+
+    this.stageBoostCounter = 0;
+  };
+
   /**
    * Do the following computation:
    * ```js
