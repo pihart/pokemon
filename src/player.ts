@@ -19,6 +19,7 @@ export default class Player {
     public readonly Level: number,
     private readonly AttackPower: NormalSpecial,
     private readonly DefenseStat: NormalSpecial,
+    private readonly SpeedStat: number,
     private readonly MaxHealth: number,
     private readonly Moves: Move[],
     private readonly CriticalDamagePct: number,
