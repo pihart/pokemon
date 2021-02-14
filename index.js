@@ -8,6 +8,12 @@ const [
   continueOnSuccess = false,
 ] = process.argv;
 
+console.log("Using options", {
+  maxNumIters,
+  progressInterval,
+  continueOnSuccess,
+});
+
 console.time();
 for (let i = 0; i < maxNumIters; i++) {
   const randomLog = [];
