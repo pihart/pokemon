@@ -4,7 +4,8 @@
   "description": "I have no idea what this actually does",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
