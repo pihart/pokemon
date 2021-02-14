@@ -1,5 +1,5 @@
-import { Player, Players, Team, Game } from "..";
-import { Assert } from "@mehra/ts";
+const { Player, Players, Team, Game } = require("..");
+const { Assert } = require("@mehra/ts");
 
 for (let file of ["./success/1.json"]) {
   const rands = require(file);
