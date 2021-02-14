@@ -15,6 +15,8 @@ export default class Team {
 
   constructor(private readonly players: NonEmptyArray<Player>) {}
 
+  getSpeed = () => this.getCurrentPlayer().getSpeed();
+
   private getCurrentPlayer = (): Player => this.players[this.currentPlayer];
 
   /**
