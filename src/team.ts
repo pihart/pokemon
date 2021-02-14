@@ -1,4 +1,4 @@
-import { NonEmptyArray } from "@mehra/ts";
+import { Assert, NonEmptyArray } from "@mehra/ts";
 import Player from "./player";
 
 class Team {
@@ -48,6 +48,8 @@ class Team {
    * i.e. whether there is another teammate who is alive
    */
   private terminatePlayer() {
+    Assert(!this.players[this.currentPlayer].receiveDamage(0));
+
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
 
