@@ -31,6 +31,12 @@ class Team {
 
     // Test swap
     if (Math.random() < 20 / 256) {
+      // If part of swapped pair, swap along the pair
+      if (this.swappedPlayer !== undefined) {
+        const current = this.currentPlayer;
+        this.currentPlayer = this.swappedPlayer;
+        this.swappedPlayer = current;
+      }
     }
 
     if (!this.players[this.currentPlayer].playTurnAfterSwap(opponent))
