@@ -1,6 +1,6 @@
 import Team from "./team";
 
-class Game {
+export default class Game {
   constructor(private teamA: Team, private teamB: Team) {}
 
   /**
