@@ -4,7 +4,7 @@ const [
   ,
   ,
   maxNumIters = 1000,
-  progressInterval = maxNumIters / 100,
+  progressInterval = Math.floor(maxNumIters / 100),
 ] = process.argv;
 
 console.time();
