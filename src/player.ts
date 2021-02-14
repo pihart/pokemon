@@ -21,7 +21,7 @@ export default class Player {
     private readonly MaxHealth: number,
     private readonly Moves: Move[],
     private readonly CriticalDamagePct: number,
-    private healthMercyLeft: number
+    private superPotionsLeft: number
   ) {
     this.health = this.MaxHealth;
   }
@@ -162,11 +162,11 @@ export default class Player {
 
     if (
       this.health < this.MaxHealth / 4 &&
-      this.healthMercyLeft &&
+      this.superPotionsLeft &&
       Math.random() < 108 / 256
     ) {
       this.receiveDamage(-60);
-      this.healthMercyLeft--;
+      this.superPotionsLeft--;
     } else {
       this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent);
     }
