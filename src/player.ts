@@ -12,12 +12,14 @@ export default class Player {
   private health: number;
   private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
   private DefenseStage: NormalSpecial = { Normal: 0, Special: 0 };
+  private stageBoostCounter = 1;
 
   constructor(
     private readonly Types: Type[],
     public readonly Level: number,
     private readonly AttackPower: NormalSpecial,
     private readonly DefenseStat: NormalSpecial,
+    private readonly SpeedStat: number,
     private readonly MaxHealth: number,
     private readonly Moves: Move[],
     private readonly CriticalDamagePct: number,
@@ -79,8 +81,16 @@ export default class Player {
       DefenseStat = this.DefenseStat.Normal;
       DefenseStage = this.DefenseStage.Normal;
     }
-    const AttackPowerScaled = AttackPower * Player.getMultiplier(AttackStage);
-    const DefenseStatScaled = DefenseStat * Player.getMultiplier(DefenseStage);
+
+    const AttackPowerScaled =
+      AttackPower *
+      actor.getStageBoostBonus() *
+      Player.getMultiplier(AttackStage);
+    const DefenseStatScaled =
+      DefenseStat *
+      this.getStageBoostBonus() *
+      Player.getMultiplier(DefenseStage);
+
     return (
       (((actor.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
         DefenseStatScaled /
@@ -119,6 +129,8 @@ export default class Player {
         return 0;
       return 1;
     }).reduce((a, b) => a * b);
+
+  getStageBoostBonus = () => (9 / 8) ** this.stageBoostCounter;
 
   /**
    * @param takeSuperPotion
@@ -225,6 +237,7 @@ export default class Player {
     stageAttr: "AttackStage" | "DefenseStage",
     type: "Normal" | "Special"
   ) => {
+    this.stageBoostCounter++;
     this[stageAttr][type] = Math.min(
       6,
       Math.max(-6, this[stageAttr][type] + difference)
