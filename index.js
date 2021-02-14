@@ -5,6 +5,7 @@ const [
   ,
   maxNumIters = 1000,
   progressInterval = Math.floor(maxNumIters / 100),
+  continueOnSuccess = false,
 ] = process.argv;
 
 console.time();
@@ -37,7 +38,7 @@ for (let i = 0; i < maxNumIters; i++) {
         randomLog
       )}\n`
     );
-    break;
+    if (!continueOnSuccess) break;
   }
 }
 console.timeEnd();
