@@ -13,7 +13,7 @@ class Team {
    */
   private swappedPlayer?: number;
 
-  constructor(private readonly players: Readonly<NonEmptyArray<Player>>) {}
+  constructor(private readonly players: NonEmptyArray<Player>) {}
 
   /**
    * @return Whether any team member is alive
@@ -21,7 +21,7 @@ class Team {
   playTurn(opponent: Player): boolean {
     const die = Math.floor(Math.random() * 256);
 
-    // Test swap
+    // Swap
     if (die < 20) {
       // If part of swapped pair, swap along the pair
       if (this.swappedPlayer !== undefined) {
@@ -42,26 +42,27 @@ class Team {
   }
 
   /**
-   * @return Whether the game is still active
+   * Apply when current player is dead
+   * @return
+   * Whether the game is still active;
+   * i.e. whether there is another teammate who is alive
    */
   private terminatePlayer() {
+    // Delete the current player from the array
+    this.players.splice(this.currentPlayer, 1);
+
     if (this.swappedPlayer !== undefined) {
-      this.currentPlayer = this.swappedPlayer;
+      // Subtract 1 if you shifted the indices by deleting the current player
+      let offset = this.swappedPlayer > this.currentPlayer ? 1 : 0;
+      this.currentPlayer = this.swappedPlayer - offset;
+
       this.swappedPlayer = undefined;
+
       // swapped player is always alive, by definition
       return true;
     }
 
-    const { length } = this.players;
-
-    for (let offset = 1; offset < length; offset++) {
-      const index = (this.currentPlayer + offset) % length;
-      if (this.players[index].receiveDamage(0)) {
-        this.currentPlayer = index;
-        return true;
-      }
-    }
-
-    return false;
+    this.currentPlayer %= this.players.length;
+    return this.players.length >= 0;
   }
 }
