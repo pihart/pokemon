@@ -1,7 +1,7 @@
 const { Player, Players, Team, Game } = require("..");
 const { Assert } = require("@mehra/ts");
 
-for (let file of ["./success/1.json"]) {
+for (let file of ["./fail/1.json"]) {
   const rands = require(file);
   let i = 0;
   function random() {
@@ -20,5 +20,5 @@ for (let file of ["./success/1.json"]) {
     random
   );
 
-  Assert(new Game(A, B, random).play());
+  Assert(!new Game(A, B, random).play());
 }
