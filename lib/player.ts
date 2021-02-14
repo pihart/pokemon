@@ -130,7 +130,9 @@ export default class Player {
       return 1;
     }).reduce((a, b) => a * b);
 
-  getStageBoostBonus = () => (9 / 8) ** this.stageBoostCounter;
+  private getStageBoostBonus = () => (9 / 8) ** this.stageBoostCounter;
+
+  getSpeed = () => this.SpeedStat * this.getStageBoostBonus();
 
   /**
    * @param takeSuperPotion
