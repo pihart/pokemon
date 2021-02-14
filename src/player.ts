@@ -44,7 +44,10 @@ export default class Player {
    * @return Whether still alive
    */
   receiveDamage = (damage: number) => {
-    this.health = Math.min(this.MaxHealth, Math.max(0, this.health - damage));
+    this.health = Math.min(
+      this.MaxHealth,
+      Math.max(0, this.health - Math.floor(damage))
+    );
     return this.health > 0;
   };
 
