@@ -1,8 +1,8 @@
 import { Assert, NonEmptyArray } from "@mehra/ts";
 import Player from "./player";
 
-class Team {
-  public currentPlayer = 0;
+export default class Team {
+  private currentPlayer = 0;
   /**
    * The index of the player that the current player is swapped with, if any.
    *
@@ -14,6 +14,8 @@ class Team {
   private swappedPlayer?: number;
 
   constructor(private readonly players: NonEmptyArray<Player>) {}
+
+  private getCurrentPlayer = (): Player => this.players[this.currentPlayer];
 
   /**
    * @return Whether any team member is alive
@@ -36,7 +38,7 @@ class Team {
       return true;
     }
 
-    if (!this.players[this.currentPlayer].playTurn(die < 128, opponent))
+    if (!this.getCurrentPlayer().playTurn(die < 128, opponent))
       return this.terminatePlayer();
 
     return true;
@@ -49,7 +51,7 @@ class Team {
    * i.e. whether there is another teammate who is alive
    */
   private terminatePlayer() {
-    Assert(!this.players[this.currentPlayer].receiveDamage(0));
+    Assert(!this.getCurrentPlayer().receiveDamage(0));
 
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
