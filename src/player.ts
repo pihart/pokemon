@@ -117,7 +117,9 @@ export default class Player {
       return 1;
     }).reduce((a, b) => a * b);
 
-  playTurnBeforeSwap = (): { turnEnded: boolean; isAlive: boolean } => {
+  playTurnBeforeSwap = ():
+    | { isAlive: true; turnEnded: boolean }
+    | { isAlive: false } => {
     if (!this.receiveDamage(0)) {
       throw new PlayerAlreadyDeadException();
     }
