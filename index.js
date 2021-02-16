@@ -2,21 +2,49 @@ const { appendFileSync } = require("fs");
 
 const { Team, Player, Players, Game } = require(".");
 
-const [
-  ,
-  ,
-  maxNumIterations = 1000,
-  progressInterval = Math.floor(maxNumIterations / 100),
-  continueOnSuccess = false,
-  divideProgressLogByInterval = false,
-] = process.argv;
+const parseOptions = () => {
+  let [
+    ,
+    ,
+    maxNumIterations = 1000,
+    progressInterval = Math.floor(+maxNumIterations / 100),
+    continueOnSuccess = false,
+    divideProgressLogByInterval = false,
+  ] = process.argv;
 
-console.log("Using options", {
+  console.log("Given options", {
+    maxNumIterations,
+    progressInterval,
+    continueOnSuccess,
+    divideProgressLogByInterval,
+  });
+
+  maxNumIterations = +maxNumIterations;
+  progressInterval = +progressInterval;
+  continueOnSuccess = !!continueOnSuccess;
+  divideProgressLogByInterval = !!divideProgressLogByInterval;
+
+  console.log("Using options", {
+    maxNumIterations,
+    progressInterval,
+    continueOnSuccess,
+    divideProgressLogByInterval,
+  });
+
+  return {
+    maxNumIterations,
+    progressInterval,
+    continueOnSuccess,
+    divideProgressLogByInterval,
+  };
+};
+
+const {
   maxNumIterations,
   progressInterval,
   continueOnSuccess,
   divideProgressLogByInterval,
-});
+} = parseOptions();
 
 console.time();
 for (let i = 0; i < maxNumIterations; i++) {
