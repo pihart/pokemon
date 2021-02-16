@@ -95,7 +95,10 @@ npm start <maxNumIterations = 1000> <progressCheckInterval = floor(maxNumIterati
 ```
 
 This will run up to `maxNumIterations` simulations, halting earlier if and only if team `A` wins and `!continueOnSuccess`.
-It will log the elapsed time and current iteration (divided by `progressCheckInterval` if `divideProgressLogByInterval`) before every `progressCheckInterval` number of iterations.
+
+It will log the elapsed time and current iteration (divided by `progressCheckInterval` if `divideProgressLogByInterval`) before every `progressCheckInterval` number of iterations;
+you can set `progressCheckInterval = 0` to not have this happen, or to some sufficiently large number to have it occur only at step `0`.
+
 On success (team `A`'s win), it will log _and_ append a record to the end of the file `avi.log` (or create it if it does not exist).
 This log will include the current (**not elapsed**) time, the iteration at which the success occurred, and the entire sequence of random numbers in that simulation.
 This is sufficient information to replay the game without loss.
