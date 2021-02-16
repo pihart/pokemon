@@ -23,7 +23,7 @@ export default class Game {
   /**
    * @return Whether Team A wins
    */
-  private playRound(): boolean | void {
+  playRound(): boolean | void {
     const { teamA: A, teamB: B } = this;
 
     const a = A.getSpeed();
