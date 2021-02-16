@@ -104,29 +104,12 @@ export default class Player {
   };
 
   private calcDamage = (move: MoveLike, actor: Player) => {
-    /**
-     * Same Type Attack Bonus
-     *
-     * If the Player has the same type as the move being used,
-     * they get a 50% damage bonus
-     */
-    const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
-    let AttackPower: number;
-    let AttackStage: number;
-    let DefenseStat: number;
-    let DefenseStage: number;
-
-    if (move.isSpecial) {
-      AttackPower = actor.AttackPower.Special;
-      AttackStage = actor.AttackStage.Special;
-      DefenseStat = this.DefenseStat.Special;
-      DefenseStage = this.DefenseStage.Special;
-    } else {
-      AttackPower = actor.AttackPower.Normal;
-      AttackStage = actor.AttackStage.Normal;
-      DefenseStat = this.DefenseStat.Normal;
-      DefenseStage = this.DefenseStage.Normal;
-    }
+    const {
+      DefenseStage,
+      DefenseStat,
+      AttackStage,
+      AttackPower,
+    } = this.baseAttackDefense(move, actor);
 
     const AttackPowerScaled =
       AttackPower *
@@ -142,27 +125,59 @@ export default class Player {
         DefenseStatScaled /
         50 +
         2) *
-      STAB *
-      this.getWeakness(move.Type) *
-      this.RNG(0.85, 1)
+      this.baseDamage(move, actor)
     );
   };
 
   private calcCriticalDamage = (move: MoveLike, actor: Player) => {
-    const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
+    const { DefenseStat, AttackPower } = this.baseAttackDefense(move, actor);
 
     return (
       ((2 * actor.Level + 5) / (actor.Level + 5)) *
-      (((((2 * actor.Level) / 5 + 2) *
-        move.AttackStat *
-        actor.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
-        this.DefenseStat[move.isSpecial ? "Special" : "Normal"] /
+      (((((2 * actor.Level) / 5 + 2) * move.AttackStat * AttackPower) /
+        DefenseStat /
         50 +
         2) *
-        STAB *
-        this.getWeakness(move.Type) *
-        this.RNG(0.85, 1))
+        this.baseDamage(move, actor))
     );
+  };
+
+  /**
+   * A non-deterministic multiplicative constant for use in damage calculations
+   */
+  private baseDamage = (move: MoveLike, actor: Player) => {
+    /**
+     * Same Type Attack Bonus
+     *
+     * If the Player has the same type as the move being used,
+     * they get a 50% damage bonus.
+     */
+    const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
+
+    return STAB * this.getWeakness(move.Type) * this.RNG(0.85, 1);
+  };
+
+  /**
+   * Something to do with power of an attack
+   *
+   * Gives appropriate constants based on whether the move is special.
+   * Does not factor in bonuses.
+   */
+  private baseAttackDefense = (move: MoveLike, actor: Player) => {
+    if (move.isSpecial) {
+      return {
+        AttackPower: actor.AttackPower.Special,
+        AttackStage: actor.AttackStage.Special,
+        DefenseStat: this.DefenseStat.Special,
+        DefenseStage: this.DefenseStage.Special,
+      };
+    }
+    return {
+      AttackPower: actor.AttackPower.Normal,
+      AttackStage: actor.AttackStage.Normal,
+      DefenseStat: this.DefenseStat.Normal,
+      DefenseStage: this.DefenseStage.Normal,
+    };
   };
 
   private getWeakness = (attackingType: Type) =>
