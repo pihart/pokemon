@@ -11,5 +11,5 @@ export interface Move extends MoveLike {
      * @param recipient Opponent of {@param actor}
      * @return Whether the recipient is alive
      */
-    execute: (actor: Player, recipient: Player) => boolean;
+    execute: (actor: Player, recipient: Player, random: () => number) => boolean;
 }

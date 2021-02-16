@@ -13,7 +13,10 @@ export default class Team {
    */
   private swappedPlayer?: number;
 
-  constructor(private readonly players: NonEmptyArray<Player>) {}
+  constructor(
+    private readonly players: NonEmptyArray<Player>,
+    private random: () => number
+  ) {}
 
   getSpeed = () => this.getCurrentPlayer().getSpeed();
 
@@ -24,7 +27,7 @@ export default class Team {
   ):
     | { thisActive: true; opponentActive: boolean }
     | { thisActive: false; opponentActive: true } {
-    const die = Math.floor(Math.random() * 256);
+    const die = Math.floor(this.random() * 256);
 
     // Swap
     if (this.players.length >= 2 && die < 20) {
@@ -33,10 +36,22 @@ export default class Team {
       if (this.swappedPlayer !== undefined) {
         const current = this.currentPlayer;
         this.currentPlayer = this.swappedPlayer;
+        // console.log(
+        //   "following existing swap",
+        //   current,
+        //   "with",
+        //   this.currentPlayer
+        // );
         this.swappedPlayer = current;
       } else {
         this.swappedPlayer = this.currentPlayer;
         this.currentPlayer++;
+        // console.log(
+        //   "creating new swap",
+        //   this.swappedPlayer,
+        //   "with",
+        //   this.currentPlayer
+        // );
         this.currentPlayer %= this.players.length;
       }
       return { opponentActive: true, thisActive: true };
@@ -69,11 +84,18 @@ export default class Team {
    */
   private terminatePlayer() {
     Assert(!this.getCurrentPlayer().receiveDamage(0));
+    // console.log(
+    //   "active player with index",
+    //   this.currentPlayer,
+    //   "and stats",
+    //   this.getCurrentPlayer(),
+    //   "has died"
+    // );
 
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
 
-    if(!this.players.length) return false;
+    if (!this.players.length) return false;
 
     if (this.swappedPlayer !== undefined) {
       // Subtract 1 if you shifted the indices by deleting the current player

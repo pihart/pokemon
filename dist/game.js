@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Game {
-    constructor(teamA, teamB) {
+    constructor(teamA, teamB, random) {
         this.teamA = teamA;
         this.teamB = teamB;
+        this.random = random;
+        this.randomLog = [];
     }
     /**
      * @return Whether Team A wins
@@ -22,7 +24,7 @@ class Game {
         const { teamA: A, teamB: B } = this;
         const a = A.getSpeed();
         const b = B.getSpeed();
-        const AFirst = a === b ? Math.random() < 0.5 : a > b;
+        const AFirst = a === b ? this.random() < 0.5 : a > b;
         const teamOrder = AFirst ? [A, B] : [B, A];
         const winner = Game.playRoundGivenTeamOrder(...teamOrder);
         if (winner === "first")

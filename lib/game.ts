@@ -1,7 +1,13 @@
 import Team from "./team";
 
 export default class Game {
-  constructor(private teamA: Team, private teamB: Team) {}
+  public randomLog: number[] = [];
+
+  constructor(
+    private teamA: Team,
+    private teamB: Team,
+    private random: () => number
+  ) {}
 
   /**
    * @return Whether Team A wins
@@ -23,7 +29,7 @@ export default class Game {
     const a = A.getSpeed();
     const b = B.getSpeed();
 
-    const AFirst = a === b ? Math.random() < 0.5 : a > b;
+    const AFirst = a === b ? this.random() < 0.5 : a > b;
 
     const teamOrder: [Team, Team] = AFirst ? [A, B] : [B, A];
 

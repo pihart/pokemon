@@ -6,8 +6,9 @@ const resistances_1 = require("./resistances");
 class PlayerAlreadyDeadException extends ts_1.CustomError {
 }
 class Player {
-    constructor({ AttackPower, CriticalDamagePct, DefenseStat, Level, MaxHealth, Moves, SpeedStat, superPotionsLeft, Types, }, isHuman) {
+    constructor({ AttackPower, CriticalDamagePct, DefenseStat, Level, MaxHealth, Moves, SpeedStat, superPotionsLeft, Types, }, isHuman, random) {
         this.isHuman = isHuman;
+        this.random = random;
         this.AttackStage = { Normal: 0, Special: 0 };
         this.DefenseStage = { Normal: 0, Special: 0 };
         this.paralysisSpeedEffectWaived = false;
@@ -17,14 +18,22 @@ class Player {
         /**
          * @return Whether still alive
          */
-        this.receiveDamagingMove = (move, actor) => this.receiveDamage(Math.random() < this.CriticalDamagePct
-            ? this.calcCriticalDamage(move, actor)
-            : this.calcDamage(move, actor));
+        this.receiveDamagingMove = (move, actor) => {
+            // console.log(move);
+            return this.receiveDamage(this.random() < this.CriticalDamagePct
+                ? this.calcCriticalDamage(move, actor)
+                : this.calcDamage(move, actor));
+        };
         /**
          * @return Whether still alive
          */
         this.receiveDamage = (damage) => {
             this.health = Math.min(this.MaxHealth, Math.max(0, this.health - Math.floor(damage)));
+            // console.log({
+            //   damage: Math.floor(damage),
+            //   isHuman: this.isHuman,
+            //   healthAfter: this.health,
+            // });
             return this.health > 0;
         };
         this.calcDamage = (move, actor) => {
@@ -63,7 +72,7 @@ class Player {
                 2) *
                 STAB *
                 this.getWeakness(move.Type) *
-                RNG(0.85, 1));
+                this.RNG(0.85, 1));
         };
         this.calcCriticalDamage = (move, actor) => {
             const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
@@ -76,7 +85,7 @@ class Player {
                     2) *
                     STAB *
                     this.getWeakness(move.Type) *
-                    RNG(85, 100))) /
+                    this.RNG(85, 100))) /
                 100);
         };
         this.getWeakness = (attackingType) => this.Types.map((defendingType) => {
@@ -115,9 +124,9 @@ class Player {
                 return { thisAlive: true, opponentAlive: true };
             }
             if ((_a = this.confusion) === null || _a === void 0 ? void 0 : _a.turnsLeft) {
-                // console.log("Confused");
+                // console.log("Confused", { turnsLeft: this.confusion.turnsLeft });
                 this.confusion.turnsLeft--;
-                if (Math.random() < 0.5) {
+                if (this.random() < 0.5) {
                     // console.log("Doing confusion damage and ending turn");
                     return {
                         opponentAlive: true,
@@ -126,10 +135,12 @@ class Player {
                 }
                 // console.log("Confusion safe");
             }
-            if (this.paralyzed && Math.random() < 0.25) {
+            if (this.paralyzed && this.random() < 0.25) {
                 return { thisAlive: true, opponentAlive: true };
             }
-            if (!this.Moves[Math.floor(RNG(0, this.Moves.length))].execute(this, opponent))
+            const chosenMove = Math.floor(this.RNG(0, this.Moves.length));
+            // console.log("Attempting move", chosenMove, { isHuman: this.isHuman });
+            if (!this.Moves[chosenMove].execute(this, opponent, this.random))
                 return {
                     thisAlive: true,
                     opponentAlive: false,
@@ -149,7 +160,7 @@ class Player {
                 return;
             this.confusion = {
                 actor,
-                turnsLeft: Math.floor(RNG(1, 5)),
+                turnsLeft: Math.floor(this.RNG(1, 5)),
             };
         };
         this.unConfuse = () => {
@@ -165,10 +176,10 @@ class Player {
         this.makeSleep = () => {
             if (this.sleepParalysisPoisonGroup())
                 return;
-            this.sleepingTurnsLeft = Math.floor(RNG(1, 8));
+            this.sleepingTurnsLeft = Math.floor(this.RNG(1, 8));
         };
         this.poison = () => {
-            if (this.sleepParalysisPoisonGroup())
+            if (this.Types.includes(type_1.default.Poison) || this.sleepParalysisPoisonGroup())
                 return;
             this.poisoned = true;
         };
@@ -196,6 +207,7 @@ class Player {
             this.DefenseStage.Special = 0;
             this.stageBoostCounter = 0;
         };
+        this.RNG = (a, b) => this.random() * (b - a) + a;
         this.AttackPower = AttackPower;
         this.CriticalDamagePct = CriticalDamagePct;
         this.DefenseStat = DefenseStat;
@@ -239,4 +251,3 @@ class Player {
     }
 }
 exports.default = Player;
-const RNG = (a, b) => Math.random() * (b - a) + a;

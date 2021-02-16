@@ -5,7 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node index.js"
+    "start": "node index.js",
+    "pretest": "npm run build",
+    "test": "node test/index.js",
+    "playback": "npm test > damage.log"
   },
   "keywords": [],
   "author": "",

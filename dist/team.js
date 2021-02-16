@@ -2,14 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const ts_1 = require("@mehra/ts");
 class Team {
-    constructor(players) {
+    constructor(players, random) {
         this.players = players;
+        this.random = random;
         this.currentPlayer = 0;
         this.getSpeed = () => this.getCurrentPlayer().getSpeed();
         this.getCurrentPlayer = () => this.players[this.currentPlayer];
     }
     playTurn(opponentTeam) {
-        const die = Math.floor(Math.random() * 256);
+        const die = Math.floor(this.random() * 256);
         // Swap
         if (this.players.length >= 2 && die < 20) {
             this.getCurrentPlayer().unConfuse();
@@ -17,11 +18,23 @@ class Team {
             if (this.swappedPlayer !== undefined) {
                 const current = this.currentPlayer;
                 this.currentPlayer = this.swappedPlayer;
+                // console.log(
+                //   "following existing swap",
+                //   current,
+                //   "with",
+                //   this.currentPlayer
+                // );
                 this.swappedPlayer = current;
             }
             else {
                 this.swappedPlayer = this.currentPlayer;
                 this.currentPlayer++;
+                // console.log(
+                //   "creating new swap",
+                //   this.swappedPlayer,
+                //   "with",
+                //   this.currentPlayer
+                // );
                 this.currentPlayer %= this.players.length;
             }
             return { opponentActive: true, thisActive: true };
@@ -47,6 +60,13 @@ class Team {
      */
     terminatePlayer() {
         ts_1.Assert(!this.getCurrentPlayer().receiveDamage(0));
+        // console.log(
+        //   "active player with index",
+        //   this.currentPlayer,
+        //   "and stats",
+        //   this.getCurrentPlayer(),
+        //   "has died"
+        // );
         // Delete the current player from the array
         this.players.splice(this.currentPlayer, 1);
         if (!this.players.length)
