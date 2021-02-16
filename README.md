@@ -110,3 +110,11 @@ In particular, if `"false"` is entered in the command line, it will be treated a
 ##### Speed
 
 Expect running time of around `11µs` per iteration.
+
+##### Production config for bashing
+
+When bashing out simulations, I generally use
+
+```shell
+npm start 1e12 1e6 true true > run.log &
+```
