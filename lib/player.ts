@@ -103,49 +103,17 @@ export default class Player {
     return this.health > 0;
   };
 
-  private calcDamage = (move: MoveLike, actor: Player) => {
-    const {
-      DefenseStage,
-      DefenseStat,
-      AttackStage,
-      AttackPower,
-    } = this.baseAttackDefense(move, actor);
+  private calcDamage = (move: MoveLike, actor: Player) =>
+    this.baseDamage(move, actor, true);
 
-    const AttackPowerScaled =
-      AttackPower *
-      actor.getStageBoostBonus() *
-      Player.getMultiplier(AttackStage);
-    const DefenseStatScaled =
-      DefenseStat *
-      this.getStageBoostBonus() *
-      Player.getMultiplier(DefenseStage);
-
-    return (
-      (((actor.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
-        DefenseStatScaled /
-        50 +
-        2) *
-      this.baseDamage(move, actor)
-    );
-  };
-
-  private calcCriticalDamage = (move: MoveLike, actor: Player) => {
-    const { DefenseStat, AttackPower } = this.baseAttackDefense(move, actor);
-
-    return (
-      ((2 * actor.Level + 5) / (actor.Level + 5)) *
-      (((((2 * actor.Level) / 5 + 2) * move.AttackStat * AttackPower) /
-        DefenseStat /
-        50 +
-        2) *
-        this.baseDamage(move, actor))
-    );
-  };
+  private calcCriticalDamage = (move: MoveLike, actor: Player) =>
+    ((2 * actor.Level + 5) / (actor.Level + 5)) *
+    this.baseDamage(move, actor, false);
 
   /**
    * A non-deterministic multiplicative constant for use in damage calculations
    */
-  private baseDamage = (move: MoveLike, actor: Player) => {
+  private baseDamage = (move: MoveLike, actor: Player, scale: boolean) => {
     /**
      * Same Type Attack Bonus
      *
@@ -154,7 +122,30 @@ export default class Player {
      */
     const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
 
-    return STAB * this.getWeakness(move.Type) * this.RNG(0.85, 1);
+    const {
+      DefenseStage,
+      DefenseStat,
+      AttackStage,
+      AttackPower,
+    } = this.baseAttackDefense(move, actor);
+
+    return (
+      (((actor.Level * (2 / 5) + 2) *
+        move.AttackStat *
+        (AttackPower *
+          (scale
+            ? actor.getStageBoostBonus() * Player.getMultiplier(AttackStage)
+            : 1))) /
+        (DefenseStat *
+          (scale
+            ? this.getStageBoostBonus() * Player.getMultiplier(DefenseStage)
+            : 1)) /
+        50 +
+        2) *
+      STAB *
+      this.getWeakness(move.Type) *
+      this.RNG(0.85, 1)
+    );
   };
 
   /**
