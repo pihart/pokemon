@@ -80,6 +80,17 @@ const B = new Team(
 
 ### Usage
 
+#### Setup
+
+Once, you must run
+
+```shell
+npm i
+npm run build
+```
+
+#### Run
+
 ```shell
 npm start <maxNumIterations = 1000> <progressCheckInterval = floor(maxNumIterations / 100)> <continueOnSuccess = false>
 ```
