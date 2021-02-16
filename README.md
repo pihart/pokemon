@@ -82,11 +82,10 @@ const B = new Team(
 
 #### Setup
 
-Once, you must run
+Once per update, you must run
 
 ```shell
 npm i
-npm run build
 ```
 
 #### Run
