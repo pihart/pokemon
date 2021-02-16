@@ -28,16 +28,19 @@ for (let i = 0; i < maxNumIterations; i++) {
   };
 
   /**
-   * @param {PlayerOptions} options
+   * Instantiate player given options
+   * @param {boolean} isHuman
+   * @return {function(PlayerOptions): Player}
    */
-  const createPlayer = (options) => new Player(options, true, random);
+  const createPlayer = (isHuman) => (options) =>
+    new Player(options, isHuman, random);
 
   if (i % progressInterval === 0)
     console.timeLog(
       undefined,
       divideProgressLogByInterval ? i / progressInterval : i
     );
-  const A = new Team([Players.Weedle].map(createPlayer), random);
+  const A = new Team([Players.Weedle].map(createPlayer(true)), random);
   const B = new Team(
     [
       Players.Gengar1,
@@ -45,7 +48,7 @@ for (let i = 0; i < maxNumIterations; i++) {
       Players.Haunter,
       Players.Arbok,
       Players.Gengar2,
-    ].map(createPlayer),
+    ].map(createPlayer(false)),
     random
   );
 
