@@ -8,6 +8,7 @@ const [
   maxNumIters = 1000,
   progressInterval = Math.floor(maxNumIters / 100),
   continueOnSuccess = false,
+  divideProgressLogByInterval = false,
 ] = process.argv;
 
 console.log("Using options", {
@@ -30,7 +31,11 @@ for (let i = 0; i < maxNumIters; i++) {
    */
   const createPlayer = (options) => new Player(options, true, random);
 
-  if (i % progressInterval === 0) console.timeLog(undefined, i);
+  if (i % progressInterval === 0)
+    console.timeLog(
+      undefined,
+      divideProgressLogByInterval ? i / progressInterval : i
+    );
   const A = new Team([Players.Weedle].map(createPlayer), random);
   const B = new Team(
     [

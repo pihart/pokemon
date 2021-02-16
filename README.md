@@ -92,15 +92,15 @@ npm run build
 #### Run
 
 ```shell
-npm start <maxNumIterations = 1000> <progressCheckInterval = floor(maxNumIterations / 100)> <continueOnSuccess = false>
+npm start <maxNumIterations = 1000> <progressCheckInterval = floor(maxNumIterations / 100)> <continueOnSuccess = false> <divideProgressLogByInterval = false>
 ```
 
 This will run up to `maxNumIterations` simulations, halting earlier if and only if team `A` wins and `continueOnSuccess`.
-It will log the elapsed time and current iteration before every `progressCheckInterval` number of iterations.
+It will log the elapsed time and current iteration (divided by `progressCheckInterval` if `divideProgressLogByInterval`) before every `progressCheckInterval` number of iterations.
 On success (team `A`'s win), it will log _and_ append a record to the end of the file `avi.log` (or create it if it does not exist).
 This log will include the current (**not elapsed**) time, the iteration at which the success occurred, and the entire sequence of random numbers in that simulation.
 This is sufficient information to replay the game without loss.
 
 **Note:**
-`continueOnSuccess` checks for JavaScript truthiness.
-In particular, entering `"false"` in the command line execution will treat it as `true`!
+`continueOnSuccess` and `divideProgressLogByInterval` check for JavaScript truthiness.
+In particular, if `"false"` is entered in the command line, it will be treated as `true`!
