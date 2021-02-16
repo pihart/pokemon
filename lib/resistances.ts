@@ -1,5 +1,7 @@
+import { PartialMatrix } from "@mehra/ts";
+
 import Type from "./type";
-import { InvertedMatrix } from "@mehra/ts";
+import Resistance from "./resistance";
 
 const {
   never,
@@ -20,59 +22,109 @@ const {
   Bug,
 } = Type;
 
-export const Resistances: InvertedMatrix<
-  Type,
-  "weakTo" | "strongTo" | "immuneTo"
-> = {
+const { WEAK, STRONG, IMMUNE } = Resistance;
+
+export const Resistances: PartialMatrix<Type, Resistance> = {
   /*
-  [defending type (belonging to defending player)] : {
-    weakTo: [the defender will receive more damage when attacked by these types],
-    strongTo: [the defender will receive less damage when attacked by these types],
-    immuneTo: [the defender will receive no damage when attacked by these types],
+  [defending type (belonging to the defending player)] : {
+    [attacking type (belonging to the move)]: Defending player's resistance to the attack
   },
 */
   [never]: {},
-  [Normal]: { weakTo: [Fighting], strongTo: [], immuneTo: [Ghost] },
-  [Fighting]: { weakTo: [Flying, Psychic], strongTo: [Rock, Bug] },
+  [Normal]: { [Fighting]: WEAK, [Ghost]: IMMUNE },
+  [Fighting]: {
+    [Flying]: WEAK,
+    [Psychic]: WEAK,
+    [Rock]: STRONG,
+    [Bug]: STRONG,
+  },
   [Flying]: {
-    weakTo: [Rock, Electric, Ice],
-    strongTo: [Fighting, Bug, Grass],
-    immuneTo: [Ground],
+    [Rock]: WEAK,
+    [Electric]: WEAK,
+    [Ice]: WEAK,
+    [Fighting]: STRONG,
+    [Bug]: STRONG,
+    [Grass]: STRONG,
+    [Ground]: IMMUNE,
   },
   [Poison]: {
-    weakTo: [Psychic, Bug, Ground],
-    strongTo: [Fighting, Poison, Grass],
+    [Psychic]: WEAK,
+    [Bug]: WEAK,
+    [Ground]: WEAK,
+    [Fighting]: STRONG,
+    [Poison]: STRONG,
+    [Grass]: STRONG,
   },
   [Ground]: {
-    weakTo: [Water, Grass, Ice],
-    strongTo: [Rock, Poison],
-    immuneTo: [Electric],
+    [Water]: WEAK,
+    [Grass]: WEAK,
+    [Ice]: WEAK,
+    [Rock]: STRONG,
+    [Poison]: STRONG,
+    [Electric]: IMMUNE,
   },
   [Rock]: {
-    weakTo: [Fighting, Ground, Water, Grass],
-    strongTo: [Normal, Flying, Poison, Fire],
+    [Fighting]: WEAK,
+    [Ground]: WEAK,
+    [Water]: WEAK,
+    [Grass]: WEAK,
+    [Normal]: STRONG,
+    [Flying]: STRONG,
+    [Poison]: STRONG,
+    [Fire]: STRONG,
   },
   [Bug]: {
-    weakTo: [Flying, Poison, Rock, Fire],
-    strongTo: [Fighting, Ground, Grass],
+    [Flying]: WEAK,
+    [Poison]: WEAK,
+    [Rock]: WEAK,
+    [Fire]: WEAK,
+    [Fighting]: STRONG,
+    [Ground]: STRONG,
+    [Grass]: STRONG,
   },
   [Ghost]: {
-    weakTo: [Ghost],
-    strongTo: [Poison, Bug],
-    immuneTo: [Normal, Fighting],
+    [Ghost]: WEAK,
+    [Poison]: STRONG,
+    [Bug]: STRONG,
+    [Normal]: IMMUNE,
+    [Fighting]: IMMUNE,
   },
-  [Fire]: { weakTo: [Ground, Rock, Water], strongTo: [Bug, Fire, Grass] },
-  [Water]: { weakTo: [Grass, Electric], strongTo: [Fire, Water, Ice] },
+  [Fire]: {
+    [Ground]: WEAK,
+    [Rock]: WEAK,
+    [Water]: WEAK,
+    [Bug]: STRONG,
+    [Fire]: STRONG,
+    [Grass]: STRONG,
+  },
+  [Water]: {
+    [Grass]: WEAK,
+    [Electric]: WEAK,
+    [Fire]: STRONG,
+    [Water]: STRONG,
+    [Ice]: STRONG,
+  },
   [Grass]: {
-    weakTo: [Flying, Poison, Bug, Fire, Ice],
-    strongTo: [Ground, Water, Grass, Electric],
+    [Flying]: WEAK,
+    [Poison]: WEAK,
+    [Bug]: WEAK,
+    [Fire]: WEAK,
+    [Ice]: WEAK,
+    [Ground]: STRONG,
+    [Water]: STRONG,
+    [Grass]: STRONG,
+    [Electric]: STRONG,
   },
-  [Electric]: { weakTo: [Ground], strongTo: [Flying, Electric] },
-  [Psychic]: { weakTo: [Bug], strongTo: [Psychic, Fighting] },
-  [Ice]: { weakTo: [Fighting, Rock, Fire], strongTo: [Ice] },
+  [Electric]: { [Ground]: WEAK, [Flying]: STRONG, [Electric]: STRONG },
+  [Psychic]: { [Bug]: WEAK, [Psychic]: STRONG, [Fighting]: STRONG },
+  [Ice]: { [Fighting]: WEAK, [Rock]: WEAK, [Fire]: WEAK, [Ice]: STRONG },
   [Dragon]: {
-    weakTo: [Ice, Dragon],
-    strongTo: [Fire, Water, Grass, Electric],
+    [Ice]: WEAK,
+    [Dragon]: WEAK,
+    [Fire]: STRONG,
+    [Water]: STRONG,
+    [Grass]: STRONG,
+    [Electric]: STRONG,
   },
 };
 

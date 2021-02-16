@@ -3,6 +3,7 @@ import { Assert, CustomError } from "@mehra/ts";
 import { Move, MoveLike } from "./move";
 import Type from "./type";
 import Resistances from "./resistances";
+import Resistance from "./resistance";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
 
@@ -166,14 +167,10 @@ export default class Player {
   };
 
   private getWeakness = (attackingType: Type) =>
-    this.Types.map((defendingType) => {
-      if (Resistances[defendingType].weakTo?.includes(attackingType)) return 2;
-      if (Resistances[defendingType].strongTo?.includes(attackingType))
-        return 1 / 2;
-      if (Resistances[defendingType].immuneTo?.includes(attackingType))
-        return 0;
-      return 1;
-    }).reduce((a, b) => a * b);
+    this.Types.map(
+      (defendingType) =>
+        Resistances[defendingType]?.[attackingType] ?? Resistance.NORMAL
+    ).reduce((a, b) => a * b);
 
   private getStageBoostBonus = () => (9 / 8) ** this.stageBoostCounter;
 
