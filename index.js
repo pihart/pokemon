@@ -25,16 +25,21 @@ for (let i = 0; i < maxNumIters; i++) {
     return rand;
   };
 
+  /**
+   * @param {PlayerOptions} options
+   */
+  const createPlayer = (options) => new Player(options, true, random);
+
   if (i % progressInterval === 0) console.log(i);
-  const A = new Team([new Player(Players.Weedle, true, random)], random);
+  const A = new Team([Players.Weedle].map(createPlayer), random);
   const B = new Team(
     [
-      new Player(Players.Gengar1, false, random),
-      new Player(Players.Golbat, false, random),
-      new Player(Players.Haunter, false, random),
-      new Player(Players.Arbok, false, random),
-      new Player(Players.Gengar2, false, random),
-    ],
+      Players.Gengar1,
+      Players.Golbat,
+      Players.Haunter,
+      Players.Arbok,
+      Players.Gengar2,
+    ].map(createPlayer),
     random
   );
 
