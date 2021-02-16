@@ -106,3 +106,7 @@ This is sufficient information to replay the game without loss.
 **Note:**
 `continueOnSuccess` and `divideProgressLogByInterval` check for JavaScript truthiness.
 In particular, if `"false"` is entered in the command line, it will be treated as `true`!
+
+##### Speed
+
+Expect running time of around `11µs` per iteration.
