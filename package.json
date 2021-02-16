@@ -1,6 +1,6 @@
 {
   "name": "pokemon",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "I have no idea what this actually does",
   "main": "dist/index.js",
   "scripts": {
