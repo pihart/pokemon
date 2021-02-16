@@ -1,3 +1,5 @@
+const { appendFileSync } = require("fs");
+
 const { Team, Player, Players, Game } = require(".");
 
 const [
@@ -38,7 +40,7 @@ for (let i = 0; i < maxNumIters; i++) {
 
   if (new Game(A, B, random).play()) {
     console.log("success", i, randomLog);
-    require("fs").appendFileSync(
+    appendFileSync(
       "avi.log",
       `${new Date().toISOString()} success: ${i} randoms: ${JSON.stringify(
         randomLog
