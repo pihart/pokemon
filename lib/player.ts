@@ -152,17 +152,16 @@ export default class Player {
     const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
 
     return (
-      (((2 * actor.Level + 5) / (actor.Level + 5)) *
-        (((((2 * actor.Level) / 5 + 2) *
-          move.AttackStat *
-          actor.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
-          this.DefenseStat[move.isSpecial ? "Special" : "Normal"] /
-          50 +
-          2) *
-          STAB *
-          this.getWeakness(move.Type) *
-          this.RNG(85, 100))) /
-      100
+      ((2 * actor.Level + 5) / (actor.Level + 5)) *
+      (((((2 * actor.Level) / 5 + 2) *
+        move.AttackStat *
+        actor.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
+        this.DefenseStat[move.isSpecial ? "Special" : "Normal"] /
+        50 +
+        2) *
+        STAB *
+        this.getWeakness(move.Type) *
+        this.RNG(0.85, 1))
     );
   };
 
