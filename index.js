@@ -5,20 +5,20 @@ const { Team, Player, Players, Game } = require(".");
 const [
   ,
   ,
-  maxNumIters = 1000,
-  progressInterval = Math.floor(maxNumIters / 100),
+  maxNumIterations = 1000,
+  progressInterval = Math.floor(maxNumIterations / 100),
   continueOnSuccess = false,
   divideProgressLogByInterval = false,
 ] = process.argv;
 
 console.log("Using options", {
-  maxNumIters,
+  maxNumIterations,
   progressInterval,
   continueOnSuccess,
 });
 
 console.time();
-for (let i = 0; i < maxNumIters; i++) {
+for (let i = 0; i < maxNumIterations; i++) {
   const randomLog = [];
   const random = () => {
     const rand = Math.random();
