@@ -44,7 +44,7 @@ for (let i = 0; i < maxNumIters; i++) {
   );
 
   if (new Game(A, B, random).play()) {
-    console.log("success", i, randomLog);
+    console.timeLog(undefined, "success", i, randomLog);
     appendFileSync(
       "avi.log",
       `${new Date().toISOString()} success: ${i} randoms: ${JSON.stringify(
