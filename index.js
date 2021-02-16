@@ -15,6 +15,7 @@ console.log("Using options", {
   maxNumIterations,
   progressInterval,
   continueOnSuccess,
+  divideProgressLogByInterval,
 });
 
 console.time();
