@@ -30,7 +30,7 @@ for (let i = 0; i < maxNumIters; i++) {
    */
   const createPlayer = (options) => new Player(options, true, random);
 
-  if (i % progressInterval === 0) console.log(i);
+  if (i % progressInterval === 0) console.timeLog(undefined, i);
   const A = new Team([Players.Weedle].map(createPlayer), random);
   const B = new Team(
     [
