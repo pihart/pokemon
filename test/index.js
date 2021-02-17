@@ -1,24 +1,19 @@
-const { Player, Players, Team, Game } = require("..");
+const path = require("path");
+const { readFile: oldReadFile } = require("fs");
+const { promisify } = require("util");
+const { exec: oldExec } = require("child_process");
 const { Assert } = require("@mehra/ts");
 
-for (let file of ["./fail/1.json"]) {
-  const rands = require(file);
-  let i = 0;
-  function random() {
-    return rands[i++];
-  }
+const exec = promisify(oldExec);
+const readFile = promisify(oldReadFile);
 
-  const A = new Team([new Player(Players.Weedle, true, random)], random);
-  const B = new Team(
-    [
-      new Player(Players.Gengar1, false, random),
-      new Player(Players.Golbat, false, random),
-      new Player(Players.Haunter, false, random),
-      new Player(Players.Arbok, false, random),
-      new Player(Players.Gengar2, false, random),
-    ],
-    random
+const tests = [{ randoms: "./fail/1.json", playback: "./fail/1.txt" }];
+
+for (let { randoms, playback } of tests) {
+  const runPromise = exec(`npm run playback ${path.join(__dirname, randoms)}`);
+  const readPromise = readFile(path.join(__dirname, playback));
+
+  Promise.all([runPromise, readPromise]).then(([result, file]) =>
+    Assert(result.stdout.endsWith(file))
   );
-
-  Assert(!new Game(A, B, random).play());
 }
