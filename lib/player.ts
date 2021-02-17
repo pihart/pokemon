@@ -5,62 +5,28 @@ import Resistance from "./resistance";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
 
-export interface PlayerOptions {
-  Types: Type[];
-  Level: number;
-  AttackPower: NormalSpecial;
-  DefenseStat: NormalSpecial;
-  SpeedStat: number;
-  MaxHealth: number;
-  Moves: Move[];
-  CriticalDamagePct: number;
-  superPotionsLeft: number;
-}
-
-export default class Player {
-  private health: number;
+export default abstract class Player {
+  protected abstract health: number;
   private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
   private DefenseStage: NormalSpecial = { Normal: 0, Special: 0 };
   private stageBoostCounter: number;
   private paralysisSpeedEffectWaived = false;
 
-  private readonly Types: Type[];
-  public readonly Level: number;
-  private readonly AttackPower: NormalSpecial;
-  private readonly DefenseStat: NormalSpecial;
-  private readonly SpeedStat: number;
-  private readonly MaxHealth: number;
-  private readonly Moves: Move[];
-  private readonly CriticalDamagePct: number;
-  private superPotionsLeft: number;
+  protected abstract readonly Types: Type[];
+  abstract readonly Level: number;
+  protected abstract readonly AttackPower: NormalSpecial;
+  protected abstract readonly DefenseStat: NormalSpecial;
+  protected abstract readonly SpeedStat: number;
+  protected abstract readonly MaxHealth: number;
+  protected abstract readonly Moves: Move[];
+  protected abstract readonly CriticalDamagePct: number;
+  protected abstract superPotionsLeft: number;
 
-  constructor(
-    {
-      AttackPower,
-      CriticalDamagePct,
-      DefenseStat,
-      Level,
-      MaxHealth,
-      Moves,
-      SpeedStat,
-      superPotionsLeft,
-      Types,
-    }: PlayerOptions,
+  protected constructor(
     private readonly isHuman: boolean,
     private readonly random: () => number,
     private readonly log?: (...data: any[]) => void
   ) {
-    this.AttackPower = AttackPower;
-    this.CriticalDamagePct = CriticalDamagePct;
-    this.DefenseStat = DefenseStat;
-    this.SpeedStat = SpeedStat;
-    this.MaxHealth = MaxHealth;
-    this.Moves = Moves;
-    this.superPotionsLeft = superPotionsLeft;
-    this.Types = Types;
-    this.Level = Level;
-
-    this.health = this.MaxHealth;
     this.stageBoostCounter = +isHuman;
   }
 

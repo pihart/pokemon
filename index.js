@@ -1,6 +1,6 @@
 const { appendFileSync } = require("fs");
 
-const { Team, Player, Players, Game } = require(".");
+const { Team, Players, Game } = require(".");
 
 const parseOptions = () => {
   let [
@@ -56,12 +56,11 @@ for (let i = 0; i < maxNumIterations; i++) {
   };
 
   /**
-   * Instantiate player given options
+   * Instantiate player
    * @param {boolean} isHuman
-   * @return {function(PlayerOptions): Player}
    */
-  const createPlayer = (isHuman) => (options) =>
-    new Player(options, isHuman, random);
+  const createPlayer = (isHuman) => (playerConstructor) =>
+    new playerConstructor(isHuman, random);
 
   if (i % progressInterval === 0)
     console.timeLog(
