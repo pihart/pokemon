@@ -1,6 +1,6 @@
 {
   "name": "pokemon",
-  "version": "2.2.6",
+  "version": "3.2.0",
   "description": "I have no idea what this actually does",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "node index.js",
     "pretest": "npm run build",
     "test": "node test/index.js",
-    "playback": "npm test > damage.log"
+    "playback": "node playback.js"
   },
   "keywords": [],
   "author": "",
