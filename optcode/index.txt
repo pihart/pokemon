@@ -1,0 +1,706 @@
+--- Raw source ---
+(path, allowAboveRoot, separator, isPathSeparator) {
+  let res = '';
+  let lastSegmentLength = 0;
+  let lastSlash = -1;
+  let dots = 0;
+  let code = 0;
+  for (let i = 0; i <= path.length; ++i) {
+    if (i < path.length)
+      code = path.charCodeAt(i);
+    else if (isPathSeparator(code))
+      break;
+    else
+      code = CHAR_FORWARD_SLASH;
+
+    if (isPathSeparator(code)) {
+      if (lastSlash === i - 1 || dots === 1) {
+        // NOOP
+      } else if (dots === 2) {
+        if (res.length < 2 || lastSegmentLength !== 2 ||
+            res.charCodeAt(res.length - 1) !== CHAR_DOT ||
+            res.charCodeAt(res.length - 2) !== CHAR_DOT) {
+          if (res.length > 2) {
+            const lastSlashIndex = res.lastIndexOf(separator);
+            if (lastSlashIndex === -1) {
+              res = '';
+              lastSegmentLength = 0;
+            } else {
+              res = res.slice(0, lastSlashIndex);
+              lastSegmentLength = res.length - 1 - res.lastIndexOf(separator);
+            }
+            lastSlash = i;
+            dots = 0;
+            continue;
+          } else if (res.length !== 0) {
+            res = '';
+            lastSegmentLength = 0;
+            lastSlash = i;
+            dots = 0;
+            continue;
+          }
+        }
+        if (allowAboveRoot) {
+          res += res.length > 0 ? `${separator}..` : '..';
+          lastSegmentLength = 2;
+        }
+      } else {
+        if (res.length > 0)
+          res += `${separator}${path.slice(lastSlash + 1, i)}`;
+        else
+          res = path.slice(lastSlash + 1, i);
+        lastSegmentLength = i - lastSlash - 1;
+      }
+      lastSlash = i;
+      dots = 0;
+    } else if (code === CHAR_DOT && dots !== -1) {
+      ++dots;
+    } else {
+      dots = -1;
+    }
+  }
+  return res;
+}
+
+--- Optimized code ---
+optimization_id = 0
+source_position = 1985
+kind = OPTIMIZED_FUNCTION
+name = normalizeString
+stack_slots = 15
+compiler = turbofan
+address = 000001F21BF044A1
+
+Instructions (size = 1836)
+000001F21BF04500     0  488b59c0       REX.W movq rbx,[rcx-0x40]
+000001F21BF04504     4  f6430f01       testb [rbx+0xf],0x1
+000001F21BF04508     8  740d           jz 000001F21BF04517  <+0x17>
+000001F21BF0450A     a  49ba8079c76ef67f0000 REX.W movq r10,00007FF66EC77980  (CompileLazyDeoptimizedCode)
+000001F21BF04514    14  41ffe2         jmp r10
+000001F21BF04517    17  55             push rbp
+000001F21BF04518    18  4889e5         REX.W movq rbp,rsp
+000001F21BF0451B    1b  56             push rsi
+000001F21BF0451C    1c  57             push rdi
+000001F21BF0451D    1d  4883ec58       REX.W subq rsp,0x58
+000001F21BF04521    21  488975e8       REX.W movq [rbp-0x18],rsi
+000001F21BF04525    25  493b65e0       REX.W cmpq rsp,[r13-0x20] (external value (StackGuard::address_of_jslimit()))
+000001F21BF04529    29  0f8633050000   jna 000001F21BF04A62  <+0x562>
+000001F21BF0452F    2f  488b4528       REX.W movq rax,[rbp+0x28]
+000001F21BF04533    33  a801           test al,0x1
+000001F21BF04535    35  0f94c2         setzl dl
+000001F21BF04538    38  0fb6d2         movzxbl rdx,rdx
+000001F21BF0453B    3b  48895598       REX.W movq [rbp-0x68],rdx
+000001F21BF0453F    3f  33ff           xorl rdi,rdi
+000001F21BF04541    41  41b8ffffffff   movl r8,00000000FFFFFFFF
+000001F21BF04547    47  4d8b4d48       REX.W movq r9,[r13+0x48] (root (empty_string))
+000001F21BF0454B    4b  4c8be7         REX.W movq r12,rdi
+000001F21BF0454E    4e  4c8bf7         REX.W movq r14,rdi
+000001F21BF04551    51  48897dd8       REX.W movq [rbp-0x28],rdi
+000001F21BF04555    55  48897dc8       REX.W movq [rbp-0x38],rdi
+000001F21BF04559    59  4c8945b8       REX.W movq [rbp-0x48],r8
+000001F21BF0455D    5d  4c894de0       REX.W movq [rbp-0x20],r9
+000001F21BF04561    61  e91a000000     jmp 000001F21BF04580  <+0x80>
+000001F21BF04566    66  660f1f840000000000 nop
+000001F21BF0456F    6f  90             nop
+000001F21BF04570    70  488955e0       REX.W movq [rbp-0x20],rdx
+000001F21BF04574    74  4c895dd8       REX.W movq [rbp-0x28],r11
+000001F21BF04578    78  488975c8       REX.W movq [rbp-0x38],rsi
+000001F21BF0457C    7c  48897db8       REX.W movq [rbp-0x48],rdi
+000001F21BF04580    80  837d9800       cmpl [rbp-0x68],0x0
+000001F21BF04584    84  0f8512060000   jnz 000001F21BF04B9C  <+0x69c>
+000001F21BF0458A    8a  488b48ff       REX.W movq rcx,[rax-0x1]
+000001F21BF0458E    8e  6683790b40     cmpw [rcx+0xb],0x40
+000001F21BF04593    93  0f830f060000   jnc 000001F21BF04BA8  <+0x6a8>
+000001F21BF04599    99  8b480b         movl rcx,[rax+0xb]
+000001F21BF0459C    9c  488b75c8       REX.W movq rsi,[rbp-0x38]
+000001F21BF045A0    a0  3bf1           cmpl rsi,rcx
+000001F21BF045A2    a2  0f8791040000   ja 000001F21BF04A39  <+0x539>
+000001F21BF045A8    a8  3bf1           cmpl rsi,rcx
+000001F21BF045AA    aa  410f92c3       setcl r11l
+000001F21BF045AE    ae  450fb6db       movzxbl r11,r11
+000001F21BF045B2    b2  4183fb00       cmpl r11,0x0
+000001F21BF045B6    b6  0f854a000000   jnz 000001F21BF04606  <+0x106>
+000001F21BF045BC    bc  4183fe2f       cmpl r14,0x2f
+000001F21BF045C0    c0  0f840f000000   jz 000001F21BF045D5  <+0xd5>
+000001F21BF045C6    c6  4183fe5c       cmpl r14,0x5c
+000001F21BF045CA    ca  0f94c2         setzl dl
+000001F21BF045CD    cd  0fb6d2         movzxbl rdx,rdx
+000001F21BF045D0    d0  e905000000     jmp 000001F21BF045DA  <+0xda>
+000001F21BF045D5    d5  ba01000000     movl rdx,0000000000000001
+000001F21BF045DA    da  48bff91bf0af8b010000 REX.W movq rdi,0000018BAFF01BF9    ;; object: 0x018baff01bf9 <JSFunction isPathSeparator (sfi = 000000EC7C0152A1)>
+000001F21BF045E4    e4  483b7d10       REX.W cmpq rdi,[rbp+0x10]
+000001F21BF045E8    e8  0f85c6050000   jnz 000001F21BF04BB4  <+0x6b4>
+000001F21BF045EE    ee  83fa00         cmpl rdx,0x0
+000001F21BF045F1    f1  0f854d040000   jnz 000001F21BF04A44  <+0x544>
+000001F21BF045F7    f7  41be2f000000   movl r14,000000000000002F
+000001F21BF045FD    fd  4c8975d0       REX.W movq [rbp-0x30],r14
+000001F21BF04601   101  e9de000000     jmp 000001F21BF046E4  <+0x1e4>
+000001F21BF04606   106  8bd6           movl rdx,rsi
+000001F21BF04608   108  488bfa         REX.W movq rdi,rdx
+000001F21BF0460B   10b  488bd0         REX.W movq rdx,rax
+000001F21BF0460E   10e  6690           nop
+000001F21BF04610   110  4c8b72ff       REX.W movq r14,[rdx-0x1]
+000001F21BF04614   114  450fb7760b     movzxwl r14,[r14+0xb]
+000001F21BF04619   119  498bc6         REX.W movq rax,r14
+000001F21BF0461C   11c  83e007         andl rax,0x7
+000001F21BF0461F   11f  83f801         cmpl rax,0x1
+000001F21BF04622   122  0f8e3e000000   jle 000001F21BF04666  <+0x166>
+000001F21BF04628   128  83f802         cmpl rax,0x2
+000001F21BF0462B   12b  0f845f000000   jz 000001F21BF04690  <+0x190>
+000001F21BF04631   131  83f805         cmpl rax,0x5
+000001F21BF04634   134  0f8426000000   jz 000001F21BF04660  <+0x160>
+000001F21BF0463A   13a  660f1f440000   nop
+000001F21BF04640   140  83f803         cmpl rax,0x3
+000001F21BF04643   143  0f8552040000   jnz 000001F21BF04A9B  <+0x59b>
+000001F21BF04649   149  4c63721b       REX.W movsxlq r14,[rdx+0x1b]
+000001F21BF0464D   14d  4903fe         REX.W addq rdi,r14
+000001F21BF04650   150  488b520f       REX.W movq rdx,[rdx+0xf]
+000001F21BF04654   154  ebba           jmp 000001F21BF04610  <+0x110>
+000001F21BF04656   156  660f1f840000000000 nop
+000001F21BF0465F   15f  90             nop
+000001F21BF04660   160  488b520f       REX.W movq rdx,[rdx+0xf]
+000001F21BF04664   164  ebaa           jmp 000001F21BF04610  <+0x110>
+000001F21BF04666   166  83f801         cmpl rax,0x1
+000001F21BF04669   169  0f8552000000   jnz 000001F21BF046C1  <+0x1c1>
+000001F21BF0466F   16f  4c8b7217       REX.W movq r14,[rdx+0x17]
+000001F21BF04673   173  4d397548       REX.W cmpq [r13+0x48] (root (empty_string)),r14
+000001F21BF04677   177  0f851e040000   jnz 000001F21BF04A9B  <+0x59b>
+000001F21BF0467D   17d  488b520f       REX.W movq rdx,[rdx+0xf]
+000001F21BF04681   181  eb8d           jmp 000001F21BF04610  <+0x110>
+000001F21BF04683   183  660f1f840000000000 nop
+000001F21BF0468C   18c  0f1f4000       nop
+000001F21BF04690   190  498bc6         REX.W movq rax,r14
+000001F21BF04693   193  83e010         andl rax,0x10
+000001F21BF04696   196  83f810         cmpl rax,0x10
+000001F21BF04699   199  0f84fc030000   jz 000001F21BF04A9B  <+0x59b>
+000001F21BF0469F   19f  488b5217       REX.W movq rdx,[rdx+0x17]
+000001F21BF046A3   1a3  41f6c608       testb r14,0x8
+000001F21BF046A7   1a7  0f840a000000   jz 000001F21BF046B7  <+0x1b7>
+000001F21BF046AD   1ad  440fb6343a     movzxbl r14,[rdx+rdi*1]
+000001F21BF046B2   1b2  e925000000     jmp 000001F21BF046DC  <+0x1dc>
+000001F21BF046B7   1b7  440fb7347a     movzxwl r14,[rdx+rdi*2]
+000001F21BF046BC   1bc  e91b000000     jmp 000001F21BF046DC  <+0x1dc>
+000001F21BF046C1   1c1  41f6c608       testb r14,0x8
+000001F21BF046C5   1c5  0f850b000000   jnz 000001F21BF046D6  <+0x1d6>
+000001F21BF046CB   1cb  440fb7747a0f   movzxwl r14,[rdx+rdi*2+0xf]
+000001F21BF046D1   1d1  e906000000     jmp 000001F21BF046DC  <+0x1dc>
+000001F21BF046D6   1d6  440fb6743a0f   movzxbl r14,[rdx+rdi*1+0xf]
+000001F21BF046DC   1dc  4c8975d0       REX.W movq [rbp-0x30],r14
+000001F21BF046E0   1e0  488b4528       REX.W movq rax,[rbp+0x28]
+000001F21BF046E4   1e4  48baf91bf0af8b010000 REX.W movq rdx,0000018BAFF01BF9    ;; object: 0x018baff01bf9 <JSFunction isPathSeparator (sfi = 000000EC7C0152A1)>
+000001F21BF046EE   1ee  483b5510       REX.W cmpq rdx,[rbp+0x10]
+000001F21BF046F2   1f2  0f94c2         setzl dl
+000001F21BF046F5   1f5  0fb6d2         movzxbl rdx,rdx
+000001F21BF046F8   1f8  4c8b75d0       REX.W movq r14,[rbp-0x30]
+000001F21BF046FC   1fc  4183fe2f       cmpl r14,0x2f
+000001F21BF04700   200  0f8411000000   jz 000001F21BF04717  <+0x217>
+000001F21BF04706   206  4183fe5c       cmpl r14,0x5c
+000001F21BF0470A   20a  400f94c7       setzl dil
+000001F21BF0470E   20e  400fb6ff       movzxbl rdi,rdi
+000001F21BF04712   212  e905000000     jmp 000001F21BF0471C  <+0x21c>
+000001F21BF04717   217  bf01000000     movl rdi,0000000000000001
+000001F21BF0471C   21c  83fa00         cmpl rdx,0x0
+000001F21BF0471F   21f  0f849b040000   jz 000001F21BF04BC0  <+0x6c0>
+000001F21BF04725   225  83ff00         cmpl rdi,0x0
+000001F21BF04728   228  0f854b000000   jnz 000001F21BF04779  <+0x279>
+000001F21BF0472E   22e  4183fe2e       cmpl r14,0x2e
+000001F21BF04732   232  0f852a000000   jnz 000001F21BF04762  <+0x262>
+000001F21BF04738   238  4183fcff       cmpl r12,0xff
+000001F21BF0473C   23c  0f8420000000   jz 000001F21BF04762  <+0x262>
+000001F21BF04742   242  4c89e2         REX.W movq rdx,r12
+000001F21BF04745   245  83c201         addl rdx,0x1
+000001F21BF04748   248  0f807e040000   jo 000001F21BF04BCC  <+0x6cc>
+000001F21BF0474E   24e  4c8be2         REX.W movq r12,rdx
+000001F21BF04751   251  488b7db8       REX.W movq rdi,[rbp-0x48]
+000001F21BF04755   255  4c8b5dd8       REX.W movq r11,[rbp-0x28]
+000001F21BF04759   259  488b55e0       REX.W movq rdx,[rbp-0x20]
+000001F21BF0475D   25d  e9c5020000     jmp 000001F21BF04A27  <+0x527>
+000001F21BF04762   262  41bcffffffff   movl r12,00000000FFFFFFFF
+000001F21BF04768   268  488b7db8       REX.W movq rdi,[rbp-0x48]
+000001F21BF0476C   26c  4c8b5dd8       REX.W movq r11,[rbp-0x28]
+000001F21BF04770   270  488b55e0       REX.W movq rdx,[rbp-0x20]
+000001F21BF04774   274  e9ae020000     jmp 000001F21BF04A27  <+0x527>
+000001F21BF04779   279  8d56ff         leal rdx,[rsi-0x1]
+000001F21BF0477C   27c  488b7db8       REX.W movq rdi,[rbp-0x48]
+000001F21BF04780   280  3bd7           cmpl rdx,rdi
+000001F21BF04782   282  0f8491020000   jz 000001F21BF04A19  <+0x519>
+000001F21BF04788   288  4183fc01       cmpl r12,0x1
+000001F21BF0478C   28c  0f8487020000   jz 000001F21BF04A19  <+0x519>
+000001F21BF04792   292  488b55e0       REX.W movq rdx,[rbp-0x20]
+000001F21BF04796   296  448b420b       movl r8,[rdx+0xb]
+000001F21BF0479A   29a  4c8945c0       REX.W movq [rbp-0x40],r8
+000001F21BF0479E   29e  4183fc02       cmpl r12,0x2
+000001F21BF047A2   2a2  0f8432010000   jz 000001F21BF048DA  <+0x3da>
+000001F21BF047A8   2a8  448d6701       leal r12,[rdi+0x1]
+000001F21BF047AC   2ac  443be1         cmpl r12,rcx
+000001F21BF047AF   2af  0f8203000000   jc 000001F21BF047B8  <+0x2b8>
+000001F21BF047B5   2b5  4c8be1         REX.W movq r12,rcx
+000001F21BF047B8   2b8  4c8965b0       REX.W movq [rbp-0x50],r12
+000001F21BF047BC   2bc  4183fb00       cmpl r11,0x0
+000001F21BF047C0   2c0  0f8508000000   jnz 000001F21BF047CE  <+0x2ce>
+000001F21BF047C6   2c6  4c8bd9         REX.W movq r11,rcx
+000001F21BF047C9   2c9  e903000000     jmp 000001F21BF047D1  <+0x2d1>
+000001F21BF047CE   2ce  4c8bde         REX.W movq r11,rsi
+000001F21BF047D1   2d1  453be3         cmpl r12,r11
+000001F21BF047D4   2d4  0f92c1         setcl cl
+000001F21BF047D7   2d7  0fb6c9         movzxbl rcx,rcx
+000001F21BF047DA   2da  4c895da0       REX.W movq [rbp-0x60],r11
+000001F21BF047DE   2de  48894da8       REX.W movq [rbp-0x58],rcx
+000001F21BF047E2   2e2  4183f800       cmpl r8,0x0
+000001F21BF047E6   2e6  0f872c000000   ja 000001F21BF04818  <+0x318>
+000001F21BF047EC   2ec  83f900         cmpl rcx,0x0
+000001F21BF047EF   2ef  0f84f5020000   jz 000001F21BF04AEA  <+0x5ea>
+000001F21BF047F5   2f5  4963cb         REX.W movsxlq rcx,r11
+000001F21BF047F8   2f8  4963d4         REX.W movsxlq rdx,r12
+000001F21BF047FB   2fb  4c8bc6         REX.W movq r8,rsi
+000001F21BF047FE   2fe  488bda         REX.W movq rbx,rdx
+000001F21BF04801   301  33f6           xorl rsi,rsi
+000001F21BF04803   303  488bd0         REX.W movq rdx,rax
+000001F21BF04806   306  49ba0063c76ef67f0000 REX.W movq r10,00007FF66EC76300  (StringSubstring)
+000001F21BF04810   310  41ffd2         call r10
+000001F21BF04813   313  e9a3000000     jmp 000001F21BF048BB  <+0x3bb>
+000001F21BF04818   318  4c8bfe         REX.W movq r15,rsi
+000001F21BF0481B   31b  4c8bc8         REX.W movq r9,rax
+000001F21BF0481E   31e  488b4518       REX.W movq rax,[rbp+0x18]
+000001F21BF04822   322  48be2101ccaa25000000 REX.W movq rsi,00000025AACC0121    ;; object: 0x0025aacc0121 <NativeContext[239]>
+000001F21BF0482C   32c  49bac070d06ef67f0000 REX.W movq r10,00007FF66ED070C0  (ToString)
+000001F21BF04836   336  41ffd2         call r10
+000001F21BF04839   339  488945d8       REX.W movq [rbp-0x28],rax
+000001F21BF0483D   33d  837da800       cmpl [rbp-0x58],0x0
+000001F21BF04841   341  0f84ac020000   jz 000001F21BF04AF3  <+0x5f3>
+000001F21BF04847   347  48634da0       REX.W movsxlq rcx,[rbp-0x60]
+000001F21BF0484B   34b  48635db0       REX.W movsxlq rbx,[rbp-0x50]
+000001F21BF0484F   34f  33f6           xorl rsi,rsi
+000001F21BF04851   351  488bd0         REX.W movq rdx,rax
+000001F21BF04854   354  488b4528       REX.W movq rax,[rbp+0x28]
+000001F21BF04858   358  488bfe         REX.W movq rdi,rsi
+000001F21BF0485B   35b  4c8b15a6ffffff REX.W movq r10,[rip+0xffffffa6]
+000001F21BF04862   362  41ffd2         call r10
+000001F21BF04865   365  8b500b         movl rdx,[rax+0xb]
+000001F21BF04868   368  488b7dd8       REX.W movq rdi,[rbp-0x28]
+000001F21BF0486C   36c  448b470b       movl r8,[rdi+0xb]
+000001F21BF04870   370  4103d0         addl rdx,r8
+000001F21BF04873   373  4c8b45c0       REX.W movq r8,[rbp-0x40]
+000001F21BF04877   377  4403c2         addl r8,rdx
+000001F21BF0487A   37a  81fae9ffff1f   cmpl rdx,0x1fffffe9
+000001F21BF04880   380  0f835e030000   jnc 000001F21BF04BE4  <+0x6e4>
+000001F21BF04886   386  4181f8e9ffff1f cmpl r8,0x1fffffe9
+000001F21BF0488D   38d  0f835d030000   jnc 000001F21BF04BF0  <+0x6f0>
+000001F21BF04893   393  488bd8         REX.W movq rbx,rax
+000001F21BF04896   396  488bc7         REX.W movq rax,rdi
+000001F21BF04899   399  33f6           xorl rsi,rsi
+000001F21BF0489B   39b  49ba80f0cd6ef67f0000 REX.W movq r10,00007FF66ECDF080  (StringAdd_CheckNone)
+000001F21BF048A5   3a5  41ffd2         call r10
+000001F21BF048A8   3a8  488bd8         REX.W movq rbx,rax
+000001F21BF048AB   3ab  488b45e0       REX.W movq rax,[rbp-0x20]
+000001F21BF048AF   3af  33f6           xorl rsi,rsi
+000001F21BF048B1   3b1  4c8b15e5ffffff REX.W movq r10,[rip+0xffffffe5]
+000001F21BF048B8   3b8  41ffd2         call r10
+000001F21BF048BB   3bb  488b55c8       REX.W movq rdx,[rbp-0x38]
+000001F21BF048BF   3bf  2b55b8         subl rdx,[rbp-0x48]
+000001F21BF048C2   3c2  448d5aff       leal r11,[rdx-0x1]
+000001F21BF048C6   3c6  488bd0         REX.W movq rdx,rax
+000001F21BF048C9   3c9  488b75c8       REX.W movq rsi,[rbp-0x38]
+000001F21BF048CD   3cd  488b4528       REX.W movq rax,[rbp+0x28]
+000001F21BF048D1   3d1  4c8b75d0       REX.W movq r14,[rbp-0x30]
+000001F21BF048D5   3d5  e947010000     jmp 000001F21BF04A21  <+0x521>
+000001F21BF048DA   3da  4183f802       cmpl r8,0x2
+000001F21BF048DE   3de  0f820a000000   jc 000001F21BF048EE  <+0x3ee>
+000001F21BF048E4   3e4  837dd802       cmpl [rbp-0x28],0x2
+000001F21BF048E8   3e8  0f845c010000   jz 000001F21BF04A4A  <+0x54a>
+000001F21BF048EE   3ee  4183f802       cmpl r8,0x2
+000001F21BF048F2   3f2  0f865e010000   jna 000001F21BF04A56  <+0x556>
+000001F21BF048F8   3f8  48bff148cdaa25000000 REX.W movq rdi,00000025AACD48F1    ;; object: 0x0025aacd48f1 <JSFunction lastIndexOf (sfi = 000001869D291FF9)>
+000001F21BF04902   402  4c8b4f1f       REX.W movq r9,[rdi+0x1f]
+000001F21BF04906   406  52             push rdx
+000001F21BF04907   407  ff7518         push [rbp+0x18]
+000001F21BF0490A   40a  4d8b5d28       REX.W movq r11,[r13+0x28] (root (the_hole_value))
+000001F21BF0490E   40e  4153           push r11
+000001F21BF04910   410  49bc0000000006000000 REX.W movq r12,0000000600000000
+000001F21BF0491A   41a  4154           push r12
+000001F21BF0491C   41c  57             push rdi
+000001F21BF0491D   41d  4d8b7d20       REX.W movq r15,[r13+0x20] (root (undefined_value))
+000001F21BF04921   421  4157           push r15
+000001F21BF04923   423  48bb00bfbb6ef67f0000 REX.W movq rbx,00007FF66EBBBF00
+000001F21BF0492D   42d  498bf1         REX.W movq rsi,r9
+000001F21BF04930   430  4c8bc8         REX.W movq r9,rax
+000001F21BF04933   433  b806000000     movl rax,0000000000000006
+000001F21BF04938   438  488bc8         REX.W movq rcx,rax
+000001F21BF0493B   43b  49ba40e5cd6ef67f0000 REX.W movq r10,00007FF66ECDE540  (CEntry_Return1_DontSaveFPRegs_ArgvOnStack_BuiltinExit)
+000001F21BF04945   445  41ffd2         call r10
+000001F21BF04948   448  a801           test al,0x1
+000001F21BF0494A   44a  0f85ac010000   jnz 000001F21BF04AFC  <+0x5fc>
+000001F21BF04950   450  48c1e820       REX.W shrq rax, 32
+000001F21BF04954   454  83f8ff         cmpl rax,0xff
+000001F21BF04957   457  0f849e000000   jz 000001F21BF049FB  <+0x4fb>
+000001F21BF0495D   45d  83f800         cmpl rax,0x0
+000001F21BF04960   460  0f8ca7010000   jl 000001F21BF04B0D  <+0x60d>
+000001F21BF04966   466  3b45c0         cmpl rax,[rbp-0x40]
+000001F21BF04969   469  0f8c04000000   jl 000001F21BF04973  <+0x473>
+000001F21BF0496F   46f  488b45c0       REX.W movq rax,[rbp-0x40]
+000001F21BF04973   473  83f800         cmpl rax,0x0
+000001F21BF04976   476  0f86aa010000   jna 000001F21BF04B26  <+0x626>
+000001F21BF0497C   47c  4863c8         REX.W movsxlq rcx,rax
+000001F21BF0497F   47f  33f6           xorl rsi,rsi
+000001F21BF04981   481  488b45e0       REX.W movq rax,[rbp-0x20]
+000001F21BF04985   485  33db           xorl rbx,rbx
+000001F21BF04987   487  4c8b157afeffff REX.W movq r10,[rip+0xfffffe7a]
+000001F21BF0498E   48e  41ffd2         call r10
+000001F21BF04991   491  8b500b         movl rdx,[rax+0xb]
+000001F21BF04994   494  83ea01         subl rdx,0x1
+000001F21BF04997   497  48bff148cdaa25000000 REX.W movq rdi,00000025AACD48F1    ;; object: 0x0025aacd48f1 <JSFunction lastIndexOf (sfi = 000001869D291FF9)>
+000001F21BF049A1   4a1  488b771f       REX.W movq rsi,[rdi+0x1f]
+000001F21BF049A5   4a5  50             push rax
+000001F21BF049A6   4a6  ff7518         push [rbp+0x18]
+000001F21BF049A9   4a9  4d8b4528       REX.W movq r8,[r13+0x28] (root (the_hole_value))
+000001F21BF049AD   4ad  4150           push r8
+000001F21BF049AF   4af  4c8b055cffffff REX.W movq r8,[rip+0xffffff5c]
+000001F21BF049B6   4b6  4150           push r8
+000001F21BF049B8   4b8  57             push rdi
+000001F21BF049B9   4b9  498b7d20       REX.W movq rdi,[r13+0x20] (root (undefined_value))
+000001F21BF049BD   4bd  57             push rdi
+000001F21BF049BE   4be  488945e0       REX.W movq [rbp-0x20],rax
+000001F21BF049C2   4c2  488955d8       REX.W movq [rbp-0x28],rdx
+000001F21BF049C6   4c6  488b1d58ffffff REX.W movq rbx,[rip+0xffffff58]
+000001F21BF049CD   4cd  488bf8         REX.W movq rdi,rax
+000001F21BF049D0   4d0  b806000000     movl rax,0000000000000006
+000001F21BF049D5   4d5  4c8b1561ffffff REX.W movq r10,[rip+0xffffff61]
+000001F21BF049DC   4dc  41ffd2         call r10
+000001F21BF049DF   4df  a801           test al,0x1
+000001F21BF049E1   4e1  0f8548010000   jnz 000001F21BF04B2F  <+0x62f>
+000001F21BF049E7   4e7  48c1e820       REX.W shrq rax, 32
+000001F21BF049EB   4eb  4c8b5dd8       REX.W movq r11,[rbp-0x28]
+000001F21BF049EF   4ef  442bd8         subl r11,rax
+000001F21BF049F2   4f2  488b55e0       REX.W movq rdx,[rbp-0x20]
+000001F21BF049F6   4f6  e907000000     jmp 000001F21BF04A02  <+0x502>
+000001F21BF049FB   4fb  4533db         xorl r11,r11
+000001F21BF049FE   4fe  498b5548       REX.W movq rdx,[r13+0x48] (root (empty_string))
+000001F21BF04A02   502  4531e4         xorl r12,r12
+000001F21BF04A05   505  488b75c8       REX.W movq rsi,[rbp-0x38]
+000001F21BF04A09   509  4c8b75d0       REX.W movq r14,[rbp-0x30]
+000001F21BF04A0D   50d  488b4528       REX.W movq rax,[rbp+0x28]
+000001F21BF04A11   511  488bfe         REX.W movq rdi,rsi
+000001F21BF04A14   514  e90e000000     jmp 000001F21BF04A27  <+0x527>
+000001F21BF04A19   519  488b55e0       REX.W movq rdx,[rbp-0x20]
+000001F21BF04A1D   51d  4c8b5dd8       REX.W movq r11,[rbp-0x28]
+000001F21BF04A21   521  4531e4         xorl r12,r12
+000001F21BF04A24   524  488bfe         REX.W movq rdi,rsi
+000001F21BF04A27   527  83c601         addl rsi,0x1
+000001F21BF04A2A   52a  493b65e0       REX.W cmpq rsp,[r13-0x20] (external value (StackGuard::address_of_jslimit()))
+000001F21BF04A2E   52e  0f873cfbffff   ja 000001F21BF04570  <+0x70>
+000001F21BF04A34   534  e907010000     jmp 000001F21BF04B40  <+0x640>
+000001F21BF04A39   539  488b45e0       REX.W movq rax,[rbp-0x20]
+000001F21BF04A3D   53d  488be5         REX.W movq rsp,rbp
+000001F21BF04A40   540  5d             pop rbp
+000001F21BF04A41   541  c22800         ret 0x28
+000001F21BF04A44   544  488b45e0       REX.W movq rax,[rbp-0x20]
+000001F21BF04A48   548  ebf3           jmp 000001F21BF04A3D  <+0x53d>
+000001F21BF04A4A   54a  49c7c50a000000 REX.W movq r13,0xa    ;; debug: deopt position, script offset '2571'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'Insufficient type feedback for binary operation'
+                                                             ;; debug: deopt index 10
+000001F21BF04A51   551  e80ad60b00     call 000001F21BFC2060    ;; soft deoptimization bailout
+000001F21BF04A56   556  49c7c50b000000 REX.W movq r13,0xb    ;; debug: deopt position, script offset '3129'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'Insufficient type feedback for compare operation'
+                                                             ;; debug: deopt index 11
+000001F21BF04A5D   55d  e8fed50b00     call 000001F21BFC2060    ;; soft deoptimization bailout
+000001F21BF04A62   562  48ba0000000048000000 REX.W movq rdx,0000004800000000
+000001F21BF04A6C   56c  52             push rdx
+000001F21BF04A6D   56d  b801000000     movl rax,0000000000000001
+000001F21BF04A72   572  48bbc0f6826ef67f0000 REX.W movq rbx,00007FF66E82F6C0
+000001F21BF04A7C   57c  48be2101ccaa25000000 REX.W movq rsi,00000025AACC0121    ;; object: 0x0025aacc0121 <NativeContext[239]>
+000001F21BF04A86   586  488bd0         REX.W movq rdx,rax
+000001F21BF04A89   589  49ba60e4cd6ef67f0000 REX.W movq r10,00007FF66ECDE460  (CEntry_Return1_DontSaveFPRegs_ArgvOnStack_NoBuiltinExit)
+000001F21BF04A93   593  41ffd2         call r10
+000001F21BF04A96   596  e994faffff     jmp 000001F21BF0452F  <+0x2f>
+000001F21BF04A9B   59b  48c1e720       REX.W shlq rdi, 32
+000001F21BF04A9F   59f  52             push rdx
+000001F21BF04AA0   5a0  57             push rdi
+000001F21BF04AA1   5a1  48894da0       REX.W movq [rbp-0x60],rcx
+000001F21BF04AA5   5a5  4c895da8       REX.W movq [rbp-0x58],r11
+000001F21BF04AA9   5a9  4c8965b0       REX.W movq [rbp-0x50],r12
+000001F21BF04AAD   5ad  48bae0077f6ef67f0000 REX.W movq rdx,00007FF66E7F07E0
+000001F21BF04AB7   5b7  b802000000     movl rax,0000000000000002
+000001F21BF04ABC   5bc  488bfe         REX.W movq rdi,rsi
+000001F21BF04ABF   5bf  33f6           xorl rsi,rsi
+000001F21BF04AC1   5c1  488bda         REX.W movq rbx,rdx
+000001F21BF04AC4   5c4  4c8b15c0ffffff REX.W movq r10,[rip+0xffffffc0]
+000001F21BF04ACB   5cb  41ffd2         call r10
+000001F21BF04ACE   5ce  48c1e820       REX.W shrq rax, 32
+000001F21BF04AD2   5d2  4c8bf0         REX.W movq r14,rax
+000001F21BF04AD5   5d5  488b75c8       REX.W movq rsi,[rbp-0x38]
+000001F21BF04AD9   5d9  488b4da0       REX.W movq rcx,[rbp-0x60]
+000001F21BF04ADD   5dd  4c8b5da8       REX.W movq r11,[rbp-0x58]
+000001F21BF04AE1   5e1  4c8b65b0       REX.W movq r12,[rbp-0x50]
+000001F21BF04AE5   5e5  e9f2fbffff     jmp 000001F21BF046DC  <+0x1dc>
+000001F21BF04AEA   5ea  498b4548       REX.W movq rax,[r13+0x48] (root (empty_string))
+000001F21BF04AEE   5ee  e9c8fdffff     jmp 000001F21BF048BB  <+0x3bb>
+000001F21BF04AF3   5f3  498b4548       REX.W movq rax,[r13+0x48] (root (empty_string))
+000001F21BF04AF7   5f7  e969fdffff     jmp 000001F21BF04865  <+0x365>
+000001F21BF04AFC   5fc  c5fb104007     vmovsd xmm0,[rax+0x7]
+000001F21BF04B01   601  c5fb2cd0       vcvttsd2si rdx,xmm0
+000001F21BF04B05   605  488bc2         REX.W movq rax,rdx
+000001F21BF04B08   608  e947feffff     jmp 000001F21BF04954  <+0x454>
+000001F21BF04B0D   60d  488b55c0       REX.W movq rdx,[rbp-0x40]
+000001F21BF04B11   611  03d0           addl rdx,rax
+000001F21BF04B13   613  83fa00         cmpl rdx,0x0
+000001F21BF04B16   616  0f8d02000000   jge 000001F21BF04B1E  <+0x61e>
+000001F21BF04B1C   61c  33d2           xorl rdx,rdx
+000001F21BF04B1E   61e  488bc2         REX.W movq rax,rdx
+000001F21BF04B21   621  e94dfeffff     jmp 000001F21BF04973  <+0x473>
+000001F21BF04B26   626  498b4548       REX.W movq rax,[r13+0x48] (root (empty_string))
+000001F21BF04B2A   62a  e962feffff     jmp 000001F21BF04991  <+0x491>
+000001F21BF04B2F   62f  c5fb104007     vmovsd xmm0,[rax+0x7]
+000001F21BF04B34   634  c5fb2cd0       vcvttsd2si rdx,xmm0
+000001F21BF04B38   638  488bc2         REX.W movq rax,rdx
+000001F21BF04B3B   63b  e9abfeffff     jmp 000001F21BF049EB  <+0x4eb>
+000001F21BF04B40   640  488955e0       REX.W movq [rbp-0x20],rdx
+000001F21BF04B44   644  4c895dd8       REX.W movq [rbp-0x28],r11
+000001F21BF04B48   648  48897db8       REX.W movq [rbp-0x48],rdi
+000001F21BF04B4C   64c  4c8965b0       REX.W movq [rbp-0x50],r12
+000001F21BF04B50   650  488975c8       REX.W movq [rbp-0x38],rsi
+000001F21BF04B54   654  48bbf0f4826ef67f0000 REX.W movq rbx,00007FF66E82F4F0
+000001F21BF04B5E   65e  4c8bc0         REX.W movq r8,rax
+000001F21BF04B61   661  33c0           xorl rax,rax
+000001F21BF04B63   663  4c8bce         REX.W movq r9,rsi
+000001F21BF04B66   666  48be2101ccaa25000000 REX.W movq rsi,00000025AACC0121    ;; object: 0x0025aacc0121 <NativeContext[239]>
+000001F21BF04B70   670  4c8b1514ffffff REX.W movq r10,[rip+0xffffff14]
+000001F21BF04B77   677  41ffd2         call r10
+000001F21BF04B7A   67a  488b4528       REX.W movq rax,[rbp+0x28]
+000001F21BF04B7E   67e  4c8b75d0       REX.W movq r14,[rbp-0x30]
+000001F21BF04B82   682  488b55e0       REX.W movq rdx,[rbp-0x20]
+000001F21BF04B86   686  4c8b5dd8       REX.W movq r11,[rbp-0x28]
+000001F21BF04B8A   68a  488b7db8       REX.W movq rdi,[rbp-0x48]
+000001F21BF04B8E   68e  4c8b65b0       REX.W movq r12,[rbp-0x50]
+000001F21BF04B92   692  488b75c8       REX.W movq rsi,[rbp-0x38]
+000001F21BF04B96   696  e9d5f9ffff     jmp 000001F21BF04570  <+0x70>
+000001F21BF04B9B   69b  90             nop
+000001F21BF04B9C   69c  49c7c500000000 REX.W movq r13,0x0    ;; debug: deopt position, script offset '2171'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'Smi'
+                                                             ;; debug: deopt index 0
+000001F21BF04BA3   6a3  e8b8d40300     call 000001F21BF42060    ;; eager deoptimization bailout
+000001F21BF04BA8   6a8  49c7c501000000 REX.W movq r13,0x1    ;; debug: deopt position, script offset '2171'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'not a String'
+                                                             ;; debug: deopt index 1
+000001F21BF04BAF   6af  e8acd40300     call 000001F21BF42060    ;; eager deoptimization bailout
+000001F21BF04BB4   6b4  49c7c502000000 REX.W movq r13,0x2    ;; debug: deopt position, script offset '2260'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'wrong call target'
+                                                             ;; debug: deopt index 2
+000001F21BF04BBB   6bb  e8a0d40300     call 000001F21BF42060    ;; eager deoptimization bailout
+000001F21BF04BC0   6c0  49c7c503000000 REX.W movq r13,0x3    ;; debug: deopt position, script offset '2352'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'wrong call target'
+                                                             ;; debug: deopt index 3
+000001F21BF04BC7   6c7  e894d40300     call 000001F21BF42060    ;; eager deoptimization bailout
+000001F21BF04BCC   6cc  49c7c504000000 REX.W movq r13,0x4    ;; debug: deopt position, script offset '3757'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'overflow'
+                                                             ;; debug: deopt index 4
+000001F21BF04BD3   6d3  e888d40300     call 000001F21BF42060    ;; eager deoptimization bailout
+000001F21BF04BD8   6d8  49c7c505000000 REX.W movq r13,0x5    ;; debug: deopt position, script offset '3497'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason '(unknown)'
+                                                             ;; debug: deopt index 5
+000001F21BF04BDF   6df  e87cd40700     call 000001F21BF82060    ;; lazy deoptimization bailout
+000001F21BF04BE4   6e4  49c7c506000000 REX.W movq r13,0x6    ;; debug: deopt position, script offset '3514'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'out of bounds'
+                                                             ;; debug: deopt index 6
+000001F21BF04BEB   6eb  e870d40300     call 000001F21BF42060    ;; eager deoptimization bailout
+000001F21BF04BF0   6f0  49c7c507000000 REX.W movq r13,0x7    ;; debug: deopt position, script offset '3514'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason 'out of bounds'
+                                                             ;; debug: deopt index 7
+000001F21BF04BF7   6f7  e864d40300     call 000001F21BF42060    ;; eager deoptimization bailout
+000001F21BF04BFC   6fc  49c7c508000000 REX.W movq r13,0x8    ;; debug: deopt position, script offset '2725'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason '(unknown)'
+                                                             ;; debug: deopt index 8
+000001F21BF04C03   703  e858d40700     call 000001F21BF82060    ;; lazy deoptimization bailout
+000001F21BF04C08   708  49c7c509000000 REX.W movq r13,0x9    ;; debug: deopt position, script offset '2983'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason '(unknown)'
+                                                             ;; debug: deopt index 9
+000001F21BF04C0F   70f  e84cd40700     call 000001F21BF82060    ;; lazy deoptimization bailout
+000001F21BF04C14   714  49c7c50c000000 REX.W movq r13,0xc    ;; debug: deopt position, script offset '1985'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason '(unknown)'
+                                                             ;; debug: deopt index 12
+000001F21BF04C1B   71b  e840d40700     call 000001F21BF82060    ;; lazy deoptimization bailout
+000001F21BF04C20   720  49c7c50d000000 REX.W movq r13,0xd    ;; debug: deopt position, script offset '2145'
+                                                             ;; debug: deopt position, inlining id '-1'
+                                                             ;; debug: deopt reason '(unknown)'
+                                                             ;; debug: deopt index 13
+000001F21BF04C27   727  e834d40700     call 000001F21BF82060    ;; lazy deoptimization bailout
+
+Source positions:
+ pc offset  position
+         0      1985
+        2f      2171
+        9c      2163
+        a8      2197
+        bc      1577
+        c6      1608
+        da      2260
+       106      2231
+       1e4      2352
+       1f8      1577
+       206      1608
+       21c      2352
+       22e      3719
+       238      3740
+       242      3757
+       279      2404
+       27c      2398
+       288      2416
+       292      2901
+       29a      2465
+       2a8      3530
+       2ac      3514
+       2da      3471
+       2ec      3577
+       2f5      3514
+       2fb      3577
+       318      3497
+       339      3514
+       3bb      3633
+       3c2      3645
+       3da      2498
+       3e4      2523
+       3ee      2678
+       3f8      2725
+       448      2781
+       45d      2901
+       491      2966
+       494      2973
+       497      2983
+       4df      2977
+       527      2181
+       52a      2145
+       539      3823
+       54a      2571
+       556      3129
+       562      1985
+       59b      2231
+       5fc      2781
+       60d      2901
+       62f      2977
+       640      2145
+
+Inlined functions (count = 1)
+ 0x00ec7c0152a1 <SharedFunctionInfo isPathSeparator>
+
+Deoptimization Input Data (deopt points = 14)
+ index  bytecode-offset    pc
+     0               20    NA 
+     1               20    NA 
+     2               20    NA 
+     3               67    NA 
+     4              437    NA 
+     5              358   339 
+     6              381    NA 
+     7              381    NA 
+     8              200   448 
+     9              255   4df 
+    10              129    NA 
+    11              280    NA 
+    12               -1   596 
+    13              467   67a 
+
+Safepoints (size = 162)
+000001F21BF04813     313    NA  000000000010000 (sp -> fp)  <none>
+000001F21BF04839     339   6d8  000000000110000 (sp -> fp)       5
+000001F21BF04865     365    NA  000000001110000 (sp -> fp)  <none>
+000001F21BF048A8     3a8    NA  000000000110000 (sp -> fp)  <none>
+000001F21BF048BB     3bb    NA  000000000010000 (sp -> fp)  <none>
+000001F21BF04948     448   6fc  000000000110000 (sp -> fp)       8
+000001F21BF04991     491    NA  000000000010000 (sp -> fp)  <none>
+000001F21BF049DF     4df   708  000000000110000 (sp -> fp)       9
+000001F21BF04A96     596   714  000000000010000 (sp -> fp)      12
+000001F21BF04ACE     5ce    NA  000000000110000 (sp -> fp)  <none>
+000001F21BF04B7A     67a   720  000000000110000 (sp -> fp)      13
+
+RelocInfo (size = 343)
+000001F21BF045DC  full embedded object  (0x018baff01bf9 <JSFunction isPathSeparator (sfi = 000000EC7C0152A1)>)
+000001F21BF046E6  full embedded object  (0x018baff01bf9 <JSFunction isPathSeparator (sfi = 000000EC7C0152A1)>)
+000001F21BF04824  full embedded object  (0x0025aacc0121 <NativeContext[239]>)
+000001F21BF048FA  full embedded object  (0x0025aacd48f1 <JSFunction lastIndexOf (sfi = 000001869D291FF9)>)
+000001F21BF04999  full embedded object  (0x0025aacd48f1 <JSFunction lastIndexOf (sfi = 000001869D291FF9)>)
+000001F21BF04A4A  deopt script offset  (2571)
+000001F21BF04A4A  deopt inlining id  (-1)
+000001F21BF04A4A  deopt reason  (Insufficient type feedback for binary operation)
+000001F21BF04A4A  deopt index
+000001F21BF04A52  runtime entry  (soft deoptimization bailout)
+000001F21BF04A56  deopt script offset  (3129)
+000001F21BF04A56  deopt inlining id  (-1)
+000001F21BF04A56  deopt reason  (Insufficient type feedback for compare operation)
+000001F21BF04A56  deopt index
+000001F21BF04A5E  runtime entry  (soft deoptimization bailout)
+000001F21BF04A7E  full embedded object  (0x0025aacc0121 <NativeContext[239]>)
+000001F21BF04B68  full embedded object  (0x0025aacc0121 <NativeContext[239]>)
+000001F21BF04B9C  deopt script offset  (2171)
+000001F21BF04B9C  deopt inlining id  (-1)
+000001F21BF04B9C  deopt reason  (Smi)
+000001F21BF04B9C  deopt index
+000001F21BF04BA4  runtime entry  (eager deoptimization bailout)
+000001F21BF04BA8  deopt script offset  (2171)
+000001F21BF04BA8  deopt inlining id  (-1)
+000001F21BF04BA8  deopt reason  (not a String)
+000001F21BF04BA8  deopt index
+000001F21BF04BB0  runtime entry  (eager deoptimization bailout)
+000001F21BF04BB4  deopt script offset  (2260)
+000001F21BF04BB4  deopt inlining id  (-1)
+000001F21BF04BB4  deopt reason  (wrong call target)
+000001F21BF04BB4  deopt index
+000001F21BF04BBC  runtime entry  (eager deoptimization bailout)
+000001F21BF04BC0  deopt script offset  (2352)
+000001F21BF04BC0  deopt inlining id  (-1)
+000001F21BF04BC0  deopt reason  (wrong call target)
+000001F21BF04BC0  deopt index
+000001F21BF04BC8  runtime entry  (eager deoptimization bailout)
+000001F21BF04BCC  deopt script offset  (3757)
+000001F21BF04BCC  deopt inlining id  (-1)
+000001F21BF04BCC  deopt reason  (overflow)
+000001F21BF04BCC  deopt index
+000001F21BF04BD4  runtime entry  (eager deoptimization bailout)
+000001F21BF04BD8  deopt script offset  (3497)
+000001F21BF04BD8  deopt inlining id  (-1)
+000001F21BF04BD8  deopt reason  ((unknown))
+000001F21BF04BD8  deopt index
+000001F21BF04BE0  runtime entry  (lazy deoptimization bailout)
+000001F21BF04BE4  deopt script offset  (3514)
+000001F21BF04BE4  deopt inlining id  (-1)
+000001F21BF04BE4  deopt reason  (out of bounds)
+000001F21BF04BE4  deopt index
+000001F21BF04BEC  runtime entry  (eager deoptimization bailout)
+000001F21BF04BF0  deopt script offset  (3514)
+000001F21BF04BF0  deopt inlining id  (-1)
+000001F21BF04BF0  deopt reason  (out of bounds)
+000001F21BF04BF0  deopt index
+000001F21BF04BF8  runtime entry  (eager deoptimization bailout)
+000001F21BF04BFC  deopt script offset  (2725)
+000001F21BF04BFC  deopt inlining id  (-1)
+000001F21BF04BFC  deopt reason  ((unknown))
+000001F21BF04BFC  deopt index
+000001F21BF04C04  runtime entry  (lazy deoptimization bailout)
+000001F21BF04C08  deopt script offset  (2983)
+000001F21BF04C08  deopt inlining id  (-1)
+000001F21BF04C08  deopt reason  ((unknown))
+000001F21BF04C08  deopt index
+000001F21BF04C10  runtime entry  (lazy deoptimization bailout)
+000001F21BF04C14  deopt script offset  (1985)
+000001F21BF04C14  deopt inlining id  (-1)
+000001F21BF04C14  deopt reason  ((unknown))
+000001F21BF04C14  deopt index
+000001F21BF04C1C  runtime entry  (lazy deoptimization bailout)
+000001F21BF04C20  deopt script offset  (2145)
+000001F21BF04C20  deopt inlining id  (-1)
+000001F21BF04C20  deopt reason  ((unknown))
+000001F21BF04C20  deopt index
+000001F21BF04C28  runtime entry  (lazy deoptimization bailout)
+
+--- End code ---
