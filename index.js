@@ -46,6 +46,12 @@ const {
   divideProgressLogByInterval,
 } = parseOptions();
 
+/**
+ * Instantiate player
+ */
+const createPlayer = (isHuman, random) => (playerConstructor) =>
+  new playerConstructor(isHuman, random);
+
 console.time();
 for (let i = 0; i < maxNumIterations; i++) {
   const randomLog = [];
@@ -55,19 +61,12 @@ for (let i = 0; i < maxNumIterations; i++) {
     return rand;
   };
 
-  /**
-   * Instantiate player
-   * @param {boolean} isHuman
-   */
-  const createPlayer = (isHuman) => (playerConstructor) =>
-    new playerConstructor(isHuman, random);
-
   if (i % progressInterval === 0)
     console.timeLog(
       undefined,
       divideProgressLogByInterval ? i / progressInterval : i
     );
-  const A = new Team([Players.Weedle].map(createPlayer(true)), random);
+  const A = new Team([Players.Weedle].map(createPlayer(true, random)), random);
   const B = new Team(
     [
       Players.Gengar1,
@@ -75,7 +74,7 @@ for (let i = 0; i < maxNumIterations; i++) {
       Players.Haunter,
       Players.Arbok,
       Players.Gengar2,
-    ].map(createPlayer(false)),
+    ].map(createPlayer(false, random)),
     random
   );
 
