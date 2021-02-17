@@ -55,9 +55,4 @@ const B = new Team(
   prefixedLog("Team B:")
 );
 
-console.log(
-  "Winner is",
-  new Game(A, B, random, prefixedLog("Game manager:")).play()
-    ? "Team A"
-    : "Team B"
-);
+new Game(A, B, random, prefixedLog("Game manager:")).play();

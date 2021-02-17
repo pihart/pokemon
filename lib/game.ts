@@ -19,7 +19,7 @@ export default class Game {
     while (AWins === undefined) {
       AWins = this.playRound();
     }
-    this.log?.("Team A wins?", AWins);
+    this.log?.("Winner is", AWins ? "Team A" : "Team B");
     return AWins;
   }
 
@@ -41,7 +41,7 @@ export default class Game {
     const teamOrder: [Team, Team] = AFirst ? [A, B] : [B, A];
 
     const winner = Game.playRoundGivenTeamOrder(...teamOrder);
-    this.log?.("Round winner:", winner ?? "none");
+    this.log?.("Round winner:", winner ?? "none", { AFirst });
 
     if (winner === "first") return AFirst;
     if (winner === "second") return !AFirst;
