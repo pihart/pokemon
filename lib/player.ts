@@ -1,13 +1,9 @@
-import { Assert, CustomError } from "@mehra/ts";
-
 import { Move, MoveLike } from "./move";
 import Type from "./type";
 import Resistances from "./resistances";
 import Resistance from "./resistance";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
-
-class PlayerAlreadyDeadException extends CustomError {}
 
 export interface PlayerOptions {
   Types: Type[];
@@ -191,8 +187,6 @@ export default class Player {
   ):
     | { thisAlive: true; opponentAlive: boolean }
     | { thisAlive: false; opponentAlive: true } => {
-    Assert(this.receiveDamage(0), PlayerAlreadyDeadException);
-
     if (
       takeSuperPotion &&
       this.health < this.MaxHealth / 4 &&
