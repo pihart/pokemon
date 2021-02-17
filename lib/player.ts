@@ -71,42 +71,45 @@ export default abstract class Player {
 
   private calcDamage = (move: MoveLike, actor: Player) => {
     this.log?.("Damage is noncritical");
+    return this.baseDamage(move, actor, true);
+  }
+
+  private calcCriticalDamage = (move: MoveLike, actor: Player) => {
+    this.log?.("Damage is critical");
+    return ((2 * actor.Level + 5) / (actor.Level + 5)) *
+      this.baseDamage(move, actor, false);
+  };
+
+  /**
+   * A non-deterministic multiplicative constant for use in damage calculations
+   */
+  private baseDamage = (move: MoveLike, actor: Player, scale: boolean) => {
     /**
      * Same Type Attack Bonus
      *
      * If the Player has the same type as the move being used,
-     * they get a 50% damage bonus
+     * they get a 50% damage bonus.
      */
     const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
-    let AttackPower: number;
-    let AttackStage: number;
-    let DefenseStat: number;
-    let DefenseStage: number;
 
-    if (move.isSpecial) {
-      AttackPower = actor.AttackPower.Special;
-      AttackStage = actor.AttackStage.Special;
-      DefenseStat = this.DefenseStat.Special;
-      DefenseStage = this.DefenseStage.Special;
-    } else {
-      AttackPower = actor.AttackPower.Normal;
-      AttackStage = actor.AttackStage.Normal;
-      DefenseStat = this.DefenseStat.Normal;
-      DefenseStage = this.DefenseStage.Normal;
-    }
-
-    const AttackPowerScaled =
-      AttackPower *
-      actor.getStageBoostBonus() *
-      Player.getMultiplier(AttackStage);
-    const DefenseStatScaled =
-      DefenseStat *
-      this.getStageBoostBonus() *
-      Player.getMultiplier(DefenseStage);
+    const {
+      DefenseStage,
+      DefenseStat,
+      AttackStage,
+      AttackPower,
+    } = this.baseAttackDefense(move, actor);
 
     return (
-      (((actor.Level * (2 / 5) + 2) * move.AttackStat * AttackPowerScaled) /
-        DefenseStatScaled /
+      (((actor.Level * (2 / 5) + 2) *
+        move.AttackStat *
+        (AttackPower *
+          (scale
+            ? actor.getStageBoostBonus() * Player.getMultiplier(AttackStage)
+            : 1))) /
+        (DefenseStat *
+          (scale
+            ? this.getStageBoostBonus() * Player.getMultiplier(DefenseStage)
+            : 1)) /
         50 +
         2) *
       STAB *
@@ -115,24 +118,27 @@ export default abstract class Player {
     );
   };
 
-  private calcCriticalDamage = (move: MoveLike, actor: Player) => {
-    this.log?.("Damage is critical");
-
-    const STAB = actor.Types.includes(move.Type) ? 1.5 : 1;
-
-    return (
-      (((2 * actor.Level + 5) / (actor.Level + 5)) *
-        (((((2 * actor.Level) / 5 + 2) *
-          move.AttackStat *
-          actor.AttackPower[move.isSpecial ? "Special" : "Normal"]) /
-          this.DefenseStat[move.isSpecial ? "Special" : "Normal"] /
-          50 +
-          2) *
-          STAB *
-          this.getWeakness(move.Type) *
-          this.RNG(85, 100))) /
-      100
-    );
+  /**
+   * Something to do with power of an attack
+   *
+   * Gives appropriate constants based on whether the move is special.
+   * Does not factor in bonuses.
+   */
+  private baseAttackDefense = (move: MoveLike, actor: Player) => {
+    if (move.isSpecial) {
+      return {
+        AttackPower: actor.AttackPower.Special,
+        AttackStage: actor.AttackStage.Special,
+        DefenseStat: this.DefenseStat.Special,
+        DefenseStage: this.DefenseStage.Special,
+      };
+    }
+    return {
+      AttackPower: actor.AttackPower.Normal,
+      AttackStage: actor.AttackStage.Normal,
+      DefenseStat: this.DefenseStat.Normal,
+      DefenseStage: this.DefenseStage.Normal,
+    };
   };
 
   private getWeakness = (attackingType: Type) =>
