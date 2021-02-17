@@ -15,7 +15,8 @@ export default class Team {
 
   constructor(
     private readonly players: NonEmptyArray<Player>,
-    private random: () => number
+    private readonly random: () => number,
+    private readonly log?: (...data: any[]) => void
   ) {}
 
   getSpeed = () => this.getCurrentPlayer().getSpeed();
@@ -27,32 +28,36 @@ export default class Team {
   ):
     | { thisActive: true; opponentActive: boolean }
     | { thisActive: false; opponentActive: true } {
+    this.log?.("Playing turn with player", this.getCurrentPlayer());
+
     const die = Math.floor(this.random() * 256);
+    this.log?.("Die is", 256);
 
     // Swap
     if (this.players.length >= 2 && die < 20) {
+      this.log?.("Swapping, un-confusing current");
       this.getCurrentPlayer().unConfuse();
       // If part of swapped pair, swap along the pair
       if (this.swappedPlayer !== undefined) {
         const current = this.currentPlayer;
         this.currentPlayer = this.swappedPlayer;
-        // console.log(
-        //   "following existing swap",
-        //   current,
-        //   "with",
-        //   this.currentPlayer
-        // );
+        this.log?.(
+          "Following existing swap: replacing",
+          current,
+          "with",
+          this.currentPlayer
+        );
         this.swappedPlayer = current;
       } else {
         this.swappedPlayer = this.currentPlayer;
         this.currentPlayer++;
-        // console.log(
-        //   "creating new swap",
-        //   this.swappedPlayer,
-        //   "with",
-        //   this.currentPlayer
-        // );
         this.currentPlayer %= this.players.length;
+        this.log?.(
+          "Creating new swap: replacing",
+          this.swappedPlayer,
+          "with",
+          this.currentPlayer
+        );
       }
       return { opponentActive: true, thisActive: true };
     }
@@ -62,16 +67,22 @@ export default class Team {
       opponentTeam.getCurrentPlayer()
     );
 
-    if (!opponentAlive)
+    if (!opponentAlive) {
+      this.log?.("Opponent has died");
       return {
         opponentActive: opponentTeam.terminatePlayer(),
         thisActive: true,
       };
-    if (!thisAlive)
+    }
+    if (!thisAlive) {
+      this.log?.("Own player has died");
       return {
         opponentActive: true,
         thisActive: this.terminatePlayer(),
       };
+    }
+
+    this.log?.("No deaths; ending turn");
 
     return { opponentActive: true, thisActive: true };
   }
@@ -84,16 +95,18 @@ export default class Team {
    */
   private terminatePlayer() {
     Assert(!this.getCurrentPlayer().receiveDamage(0));
-    // console.log(
-    //   "active player with index",
-    //   this.currentPlayer,
-    //   "and stats",
-    //   this.getCurrentPlayer(),
-    //   "has died"
-    // );
+    this.log?.(
+      "Active player with index",
+      this.currentPlayer,
+      "and value",
+      this.getCurrentPlayer(),
+      "has died"
+    );
 
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
+
+    this.log?.("Remaining players:", this.players);
 
     if (!this.players.length) return false;
 

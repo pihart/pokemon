@@ -22,19 +22,27 @@ const parseOptions = () => {
 
 const { filePath } = parseOptions();
 
+const prefixedLog = (...prefix) => (...data) => console.log(...prefix, ...data);
+
 /**
  * Instantiate player
  */
 const createPlayer = (isHuman, random) => (playerConstructor) =>
-  new playerConstructor(isHuman, random, (...data) => {
-    console.log(`${playerConstructor.name}:`, ...data);
-  });
+  new playerConstructor(
+    isHuman,
+    random,
+    prefixedLog(`${playerConstructor.name}:`)
+  );
 
 const randoms = require(filePath);
 let i = 0;
 const random = () => randoms[i++];
 
-const A = new Team([Players.Weedle].map(createPlayer(true, random)), random);
+const A = new Team(
+  [Players.Weedle].map(createPlayer(true, random)),
+  random,
+  prefixedLog("Team A:")
+);
 const B = new Team(
   [
     Players.Gengar1,
@@ -43,7 +51,8 @@ const B = new Team(
     Players.Arbok,
     Players.Gengar2,
   ].map(createPlayer(false, random)),
-  random
+  random,
+  prefixedLog("Team B:")
 );
 
 console.log("Winner is", new Game(A, B, random).play() ? "Team A" : "Team B");
