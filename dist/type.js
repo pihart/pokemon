@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Type = void 0;
+var Type;
+(function (Type) {
+    Type[Type["never"] = 0] = "never";
+    Type[Type["Normal"] = 1] = "Normal";
+    Type[Type["Fighting"] = 2] = "Fighting";
+    Type[Type["Flying"] = 3] = "Flying";
+    Type[Type["Poison"] = 4] = "Poison";
+    Type[Type["Ground"] = 5] = "Ground";
+    Type[Type["Rock"] = 6] = "Rock";
+    Type[Type["Bug"] = 7] = "Bug";
+    Type[Type["Ghost"] = 8] = "Ghost";
+    Type[Type["Fire"] = 9] = "Fire";
+    Type[Type["Water"] = 10] = "Water";
+    Type[Type["Grass"] = 11] = "Grass";
+    Type[Type["Electric"] = 12] = "Electric";
+    Type[Type["Psychic"] = 13] = "Psychic";
+    Type[Type["Ice"] = 14] = "Ice";
+    Type[Type["Dragon"] = 15] = "Dragon";
+})(Type = exports.Type || (exports.Type = {}));
+exports.default = Type;
