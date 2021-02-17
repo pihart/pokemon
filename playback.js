@@ -1,7 +1,15 @@
+const path = require("path");
+
 const { Team, Players, Game } = require(".");
 
 const parseOptions = () => {
   let [, , filePath = "./test/fail/1.json"] = process.argv;
+
+  console.log("Given options", {
+    filePath,
+  });
+
+  filePath = path.resolve(filePath);
 
   console.log("Using options", {
     filePath,
