@@ -55,7 +55,7 @@ To finish the game until one team wins:
 game.play();
 ```
 
-## `index.js`
+## Weedle vs Agatha
 
 Simulates a game that is supposedly important?
 Very unlikely for team A to win this game.
@@ -65,15 +65,15 @@ Very unlikely for team A to win this game.
 Simulates a game with these teams:
 
 ```js
-const A = new Team([new Player(Players.Weedle, true, random)], random);
+const A = new Team([Players.Weedle].map(createPlayer(true, random)), random);
 const B = new Team(
   [
-    new Player(Players.Gengar1, false, random),
-    new Player(Players.Golbat, false, random),
-    new Player(Players.Haunter, false, random),
-    new Player(Players.Arbok, false, random),
-    new Player(Players.Gengar2, false, random),
-  ],
+    Players.Gengar1,
+    Players.Golbat,
+    Players.Haunter,
+    Players.Arbok,
+    Players.Gengar2,
+  ].map(createPlayer(false, random)),
   random
 );
 ```
@@ -118,3 +118,23 @@ When bashing out simulations, I generally use
 ```shell
 npm start 1e12 1e6 true true > run.log &
 ```
+
+## Playback
+
+Playback any run given the sequence of random numbers:
+
+### Setup
+
+Once per update, you must run
+
+```shell
+npm i
+```
+
+### Run
+
+```shell
+npm run playback <path-to-file>
+```
+
+where `path-to-file` is the path to a requireable file which gives the array of randoms.
