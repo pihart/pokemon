@@ -116,7 +116,7 @@ Expect running time of around `9.8µs` per iteration.
 When bashing out simulations, I generally use
 
 ```shell
-npm start 1e12 1e6 true true > run.log &
+npm start Infinity 1e6 true true > run.log &
 ```
 
 ## Playback
