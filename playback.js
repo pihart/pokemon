@@ -1,8 +1,8 @@
-import { DescriptiveLogger } from "./dist/lib";
-
 const path = require("path");
 
 const { Team, Game } = require(".");
+const { DescriptiveLogger } = require("./dist/lib");
+
 const {
   createLoggedPlayer,
   PlaybackRandom,
