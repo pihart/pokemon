@@ -1,5 +1,5 @@
 import Team from "./team";
-import { Logger } from "./logger";
+import { GameLogger } from "./logger";
 
 export default class Game {
   public randomLog: number[] = [];
@@ -8,7 +8,7 @@ export default class Game {
     private readonly teamA: Team,
     private readonly teamB: Team,
     private readonly random: () => number,
-    private readonly logger?: Partial<Logger>
+    private readonly logger?: Partial<GameLogger>
   ) {}
 
   /**

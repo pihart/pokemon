@@ -10,9 +10,9 @@ export interface Log {
 }
 
 /**
- * An intentioned logger specific to this application.
+ * An intentioned logger specific to game orchestrator of this application.
  */
-export interface Logger {
+export interface GameLogger {
   Winner: TeamFn;
   GameMode: (mode: "round" | "until winner") => void;
   Speeds: (speeds: { a: number; b: number }) => void;
@@ -23,7 +23,7 @@ export interface Logger {
 /**
  * Adds descriptions to the intentions and then logs them to a specified Log
  */
-export class DescriptiveLogger implements Logger {
+export class DescriptiveLogger implements GameLogger {
   constructor(private log: Log) {}
 
   Winner(winner: string) {
