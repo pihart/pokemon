@@ -73,7 +73,7 @@ export default class Player {
   private random!: () => number;
   private log?: (...data: any[]) => void;
 
-  protected constructor(
+  constructor(
     {
       Types,
       Level,
