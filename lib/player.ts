@@ -5,28 +5,40 @@ import Resistance from "./resistance";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
 
-export default abstract class Player {
-  /* Player-specific constants */
-  protected abstract readonly Types: Type[];
-  abstract readonly Level: number;
-  protected abstract readonly AttackPower: NormalSpecial;
-  protected abstract readonly DefenseStat: NormalSpecial;
-  protected abstract readonly SpeedStat: number;
-  protected abstract readonly MaxHealth: number;
-  protected abstract readonly Moves: Move[];
-  protected abstract readonly CriticalDamagePct: number;
-  protected abstract readonly SuperPotionsLimit: number;
+/**
+ * Player-specific constants
+ */
+export interface PlayerOptions {
+  Types: Type[];
+  Level: number;
+  AttackPower: NormalSpecial;
+  DefenseStat: NormalSpecial;
+  SpeedStat: number;
+  MaxHealth: number;
+  Moves: Move[];
+  CriticalDamagePct: number;
+  SuperPotionsLimit: number;
+}
+
+export default class Player {
+  /* Player-specific constants (PlayerOptions) */
+  protected readonly Types: Type[];
+  readonly Level: number;
+  protected readonly AttackPower: NormalSpecial;
+  protected readonly DefenseStat: NormalSpecial;
+  protected readonly SpeedStat: number;
+  protected readonly MaxHealth: number;
+  protected readonly Moves: Move[];
+  protected readonly CriticalDamagePct: number;
+  protected readonly SuperPotionsLimit: number;
 
   /* Runtime-mutable stats/data */
   private AttackStage!: NormalSpecial;
   private DefenseStage!: NormalSpecial;
   private paralysisSpeedEffectWaived!: boolean;
   private stageBoostCounter!: number;
-  // Mutable values defined upon immutable values
-  // need to be initially provided in the derived class
-  // because the constructor is called before the immutables are defined
-  protected abstract health: number;
-  protected abstract superPotionsLeft: number;
+  private health!: number;
+  private superPotionsLeft!: number;
 
   /* Runtime-mutable states ("conditions") */
   /**
@@ -62,10 +74,31 @@ export default abstract class Player {
   private log?: (...data: any[]) => void;
 
   protected constructor(
+    {
+      Types,
+      Level,
+      AttackPower,
+      DefenseStat,
+      SpeedStat,
+      MaxHealth,
+      Moves,
+      CriticalDamagePct,
+      SuperPotionsLimit,
+    }: PlayerOptions,
     private readonly isHuman: boolean,
     random: () => number,
     log?: (...data: any[]) => void
   ) {
+    this.Types = Types;
+    this.Level = Level;
+    this.AttackPower = AttackPower;
+    this.DefenseStat = DefenseStat;
+    this.SpeedStat = SpeedStat;
+    this.MaxHealth = MaxHealth;
+    this.Moves = Moves;
+    this.CriticalDamagePct = CriticalDamagePct;
+    this.SuperPotionsLimit = SuperPotionsLimit;
+
     this.reset(random, log);
   }
 

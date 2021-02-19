@@ -1,7 +1,7 @@
 const { CustomError } = require("@mehra/ts");
 const { appendFileSync } = require("fs");
 
-const { Team, Players, Game } = require(".");
+const { Team, Player, Players, Game } = require(".");
 
 const parseOptions = () => {
   let [
@@ -50,8 +50,8 @@ const {
 /**
  * Instantiate player
  */
-const createPlayer = (isHuman, random, log) => (playerConstructor) =>
-  new playerConstructor(isHuman, random, log);
+const createPlayer = (isHuman, random, log) => (options) =>
+  new Player(options, isHuman, random, log);
 
 class NotCallableError extends CustomError {}
 
