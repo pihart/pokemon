@@ -121,7 +121,7 @@ npm start 1e12 1e6 true true > run.log &
 
 ## Playback
 
-Playback any run given the sequence of random numbers:
+Playback any run given its sequence of random numbers:
 
 ### Setup
 
@@ -138,3 +138,8 @@ npm run playback <path-to-file>
 ```
 
 where `path-to-file` is the path to a requireable file which gives the array of randoms.
+
+If omitted, `path-to-file` defaults to an internal constant file, namely [`test/fail/1.json`].
+While expected to remain for the life of the project, this should not be relied on programmatically.
+
+[`test/fail/1.json`]: test/fail/1.json
