@@ -1,6 +1,7 @@
 const path = require("path");
 
-const { Team, Player, Players, Game } = require(".");
+const { Team, Game } = require(".");
+const { createLoggedPlayer, PlaybackRandom, prefixedLog } = require("./dist/script");
 
 const parseOptions = () => {
   let [, , filePath = "./test/fail/1.json"] = process.argv;
@@ -22,26 +23,16 @@ const parseOptions = () => {
 
 const { filePath } = parseOptions();
 
-const prefixedLog = (...prefix) => (...data) => console.log(...prefix, ...data);
-
-/**
- * Instantiate player
- */
-const createPlayer = (isHuman, random) => (name) =>
-  new Player(Players[name], isHuman, random, prefixedLog(`${name}:`));
-
-const randoms = require(filePath);
-let i = 0;
-const random = () => randoms[i++];
+const random = PlaybackRandom(require(filePath));
 
 const A = new Team(
-  ["Weedle"].map(createPlayer(true, random)),
+  ["Weedle"].map(createLoggedPlayer(true, random)),
   random,
   prefixedLog("Team A:")
 );
 const B = new Team(
   ["Gengar1", "Golbat", "Haunter", "Arbok", "Gengar2"].map(
-    createPlayer(false, random)
+    createLoggedPlayer(false, random)
   ),
   random,
   prefixedLog("Team B:")

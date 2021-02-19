@@ -1,7 +1,8 @@
 const { CustomError } = require("@mehra/ts");
 const { appendFileSync } = require("fs");
 
-const { Team, Player, Players, Game } = require(".");
+const { Team, Players, Game } = require(".");
+const { createPlayer, RecordedRandom } = require("./dist/script");
 
 const parseOptions = () => {
   let [
@@ -47,12 +48,6 @@ const {
   divideProgressLogByInterval,
 } = parseOptions();
 
-/**
- * Instantiate player
- */
-const createPlayer = (isHuman, random, log) => (options) =>
-  new Player(options, isHuman, random, log);
-
 class NotCallableError extends CustomError {}
 
 const APlayers = [Players.Weedle].map(
@@ -73,14 +68,12 @@ const BPlayers = [
   })
 );
 
+const recordedRandom = RecordedRandom();
+const random = recordedRandom.random;
+
 console.time();
 for (let i = 0; i < maxNumIterations; i++) {
-  const randomLog = [];
-  const random = () => {
-    const rand = Math.random();
-    randomLog.push(rand);
-    return rand;
-  };
+  recordedRandom.reset();
 
   if (i % progressInterval === 0)
     console.timeLog(
@@ -94,11 +87,11 @@ for (let i = 0; i < maxNumIterations; i++) {
   const B = new Team([...BPlayers], random);
 
   if (new Game(A, B, random).play()) {
-    console.timeLog(undefined, "success", i, randomLog);
+    console.timeLog(undefined, "success", i, recordedRandom.getLog());
     appendFileSync(
       "avi.log",
       `${new Date().toISOString()} success: ${i} randoms: ${JSON.stringify(
-        randomLog
+        recordedRandom.getLog()
       )}\n`
     );
     if (!continueOnSuccess) break;

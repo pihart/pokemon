@@ -2,8 +2,8 @@
   "name": "pokemon",
   "version": "4.0.1",
   "description": "I have no idea what this actually does",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "postinstall": "npm run build",
