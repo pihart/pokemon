@@ -1,7 +1,13 @@
+import { DescriptiveLogger } from "./dist/lib";
+
 const path = require("path");
 
 const { Team, Game } = require(".");
-const { createLoggedPlayer, PlaybackRandom, prefixedLog } = require("./dist/script");
+const {
+  createLoggedPlayer,
+  PlaybackRandom,
+  prefixedLog,
+} = require("./dist/script");
 
 const parseOptions = () => {
   let [, , filePath = "./test/fail/1.json"] = process.argv;
@@ -38,4 +44,9 @@ const B = new Team(
   prefixedLog("Team B:")
 );
 
-new Game(A, B, random, prefixedLog("Game manager:")).play();
+new Game(
+  A,
+  B,
+  random,
+  new DescriptiveLogger(prefixedLog("Game manager:"))
+).play();
