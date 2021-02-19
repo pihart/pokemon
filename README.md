@@ -101,7 +101,7 @@ you can set `progressCheckInterval = 0` to not have this happen, or to some suff
 
 On success (team `A`'s win), it will log _and_ append a record to the end of the file `avi.log` (or create it if it does not exist).
 This log will include the current (**not elapsed**) time, the iteration at which the success occurred, and the entire sequence of random numbers in that simulation.
-This is sufficient information to replay the game without loss.
+This is sufficient information to replay the game without loss (see [Playback]).
 
 **Note:**
 `continueOnSuccess` and `divideProgressLogByInterval` check for JavaScript truthiness.
@@ -143,3 +143,4 @@ If omitted, `path-to-file` defaults to an internal constant file, namely [`test/
 While expected to remain for the life of the project, this should not be relied on programmatically.
 
 [`test/fail/1.json`]: test/fail/1.json
+[playback]: #playback
