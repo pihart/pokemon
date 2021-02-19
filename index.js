@@ -1,3 +1,4 @@
+const { CustomError } = require("@mehra/ts");
 const { appendFileSync } = require("fs");
 
 const { Team, Players, Game } = require(".");
@@ -49,8 +50,28 @@ const {
 /**
  * Instantiate player
  */
-const createPlayer = (isHuman, random) => (playerConstructor) =>
-  new playerConstructor(isHuman, random);
+const createPlayer = (isHuman, random, log) => (playerConstructor) =>
+  new playerConstructor(isHuman, random, log);
+
+class NotCallableError extends CustomError {}
+
+const APlayers = [Players.Weedle].map(
+  createPlayer(true, () => {
+    throw new NotCallableError();
+  })
+);
+
+const BPlayers = [
+  Players.Gengar1,
+  Players.Golbat,
+  Players.Haunter,
+  Players.Arbok,
+  Players.Gengar2,
+].map(
+  createPlayer(false, () => {
+    throw new NotCallableError();
+  })
+);
 
 console.time();
 for (let i = 0; i < maxNumIterations; i++) {
@@ -66,17 +87,11 @@ for (let i = 0; i < maxNumIterations; i++) {
       undefined,
       divideProgressLogByInterval ? i / progressInterval : i
     );
-  const A = new Team([Players.Weedle].map(createPlayer(true, random)), random);
-  const B = new Team(
-    [
-      Players.Gengar1,
-      Players.Golbat,
-      Players.Haunter,
-      Players.Arbok,
-      Players.Gengar2,
-    ].map(createPlayer(false, random)),
-    random
-  );
+
+  APlayers.forEach((player) => player.reset(random));
+  BPlayers.forEach((player) => player.reset(random));
+  const A = new Team([...APlayers], random);
+  const B = new Team([...BPlayers], random);
 
   if (new Game(A, B, random).play()) {
     console.timeLog(undefined, "success", i, randomLog);
