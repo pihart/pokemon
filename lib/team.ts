@@ -1,4 +1,5 @@
 import { Assert, NonEmptyArray } from "@mehra/ts";
+import { TeamLogger } from "./logger";
 import Player from "./player";
 
 export default class Team {
@@ -16,7 +17,7 @@ export default class Team {
   constructor(
     private readonly players: NonEmptyArray<Player>,
     private readonly random: () => number,
-    private readonly log?: (...data: any[]) => void
+    private readonly logger?: Partial<TeamLogger>
   ) {}
 
   getSpeed = () => this.getCurrentPlayer().getSpeed();
@@ -28,23 +29,21 @@ export default class Team {
   ):
     | { thisActive: true; opponentActive: boolean }
     | { thisActive: false; opponentActive: true } {
-    this.log?.("Playing turn with player", this.getCurrentPlayer());
+    this.logger?.PlayingTurnAgainst?.(this.getCurrentPlayer());
 
     const die = Math.floor(this.random() * 256);
-    this.log?.("Die is", 256);
+    this.logger?.DieRollValue?.(die);
 
     // Swap
     if (this.players.length >= 2 && die < 20) {
-      this.log?.("Swapping, un-confusing current");
       this.getCurrentPlayer().unConfuse();
       // If part of swapped pair, swap along the pair
       if (this.swappedPlayer !== undefined) {
         const current = this.currentPlayer;
         this.currentPlayer = this.swappedPlayer;
-        this.log?.(
-          "Following existing swap: replacing",
+        this.logger?.SwappingPlayer?.(
+          "Following existing",
           current,
-          "with",
           this.currentPlayer
         );
         this.swappedPlayer = current;
@@ -52,10 +51,9 @@ export default class Team {
         this.swappedPlayer = this.currentPlayer;
         this.currentPlayer++;
         this.currentPlayer %= this.players.length;
-        this.log?.(
-          "Creating new swap: replacing",
+        this.logger?.SwappingPlayer?.(
+          "Creating new",
           this.swappedPlayer,
-          "with",
           this.currentPlayer
         );
       }
@@ -68,21 +66,21 @@ export default class Team {
     );
 
     if (!opponentAlive) {
-      this.log?.("Opponent has died");
+      this.logger?.Death?.("Opponent");
       return {
         opponentActive: opponentTeam.terminatePlayer(),
         thisActive: true,
       };
     }
     if (!thisAlive) {
-      this.log?.("Own player has died");
+      this.logger?.Death?.("Own player");
       return {
         opponentActive: true,
         thisActive: this.terminatePlayer(),
       };
     }
 
-    this.log?.("No deaths; ending turn");
+    this.logger?.EndingTurn?.("No deaths");
 
     return { opponentActive: true, thisActive: true };
   }
@@ -95,18 +93,15 @@ export default class Team {
    */
   private terminatePlayer() {
     Assert(!this.getCurrentPlayer().receiveDamage(0));
-    this.log?.(
-      "Active player with index",
+    this.logger?.TerminatingPlayer?.(
       this.currentPlayer,
-      "and value",
-      this.getCurrentPlayer(),
-      "has died"
+      this.getCurrentPlayer()
     );
 
     // Delete the current player from the array
     this.players.splice(this.currentPlayer, 1);
 
-    this.log?.("Remaining players:", this.players);
+    this.logger?.RemainingPlayers?.(this.players);
 
     if (!this.players.length) return false;
 
