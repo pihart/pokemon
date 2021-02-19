@@ -18,7 +18,7 @@ export interface GameLogger {
   Winner: TeamFn;
   GameMode: (mode: "round" | "until winner") => void;
   Speeds: (speeds: { a: number; b: number }) => void;
-  PlaysFirst: TeamFn;
+  PlayingFirst: TeamFn;
   RoundWinner: (winner: "first" | "second" | "none", AFirst: boolean) => void;
 }
 
@@ -70,7 +70,7 @@ export class DescriptiveLogger implements GameLogger, TeamLogger {
     this.log("Speeds:", speeds);
   }
 
-  PlaysFirst(team: string) {
+  PlayingFirst(team: string) {
     this.log(`Team ${team} plays first`);
   }
 

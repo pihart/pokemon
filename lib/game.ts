@@ -37,7 +37,7 @@ export default class Game {
     this.logger?.Speeds?.({ a, b });
 
     const AFirst = a === b ? this.random() < 0.5 : a > b;
-    this.logger?.PlaysFirst?.(AFirst ? "A" : "B");
+    this.logger?.PlayingFirst?.(AFirst ? "A" : "B");
 
     const teamOrder: [Team, Team] = AFirst ? [A, B] : [B, A];
 
