@@ -125,19 +125,19 @@ export default class Player {
   /**
    * @return Whether still alive
    */
-  receiveDamagingMove = (move: MoveLike, actor: Player) => {
+  receiveDamagingMove(move: MoveLike, actor: Player) {
     this.log?.("Receiving move", move, "from", actor);
     return this.receiveDamage(
       this.random() < this.CriticalDamagePct
         ? this.calcCriticalDamage(move, actor)
         : this.calcDamage(move, actor)
     );
-  };
+  }
 
   /**
    * @return Whether still alive
    */
-  receiveDamage = (damage: number) => {
+  receiveDamage(damage: number) {
     const damageInt = Math.floor(damage);
 
     this.log?.("Taking damage of", damageInt, "rounded from", damage);
@@ -151,7 +151,7 @@ export default class Player {
     this.log?.("Health is now", this.health);
 
     return this.health > 0;
-  };
+  }
 
   private calcDamage = (move: MoveLike, actor: Player) => {
     this.log?.("Damage is noncritical");
@@ -246,12 +246,12 @@ export default class Player {
    * It actually happening depends on the current state of the player.
    * @param opponent
    */
-  playTurn = (
+  playTurn(
     takeSuperPotion: boolean,
     opponent: Player
   ):
     | { thisAlive: true; opponentAlive: boolean }
-    | { thisAlive: false; opponentAlive: true } => {
+    | { thisAlive: false; opponentAlive: true } {
     this.log?.("Playing turn", { takeSuperPotion, opponent });
 
     if (
@@ -318,9 +318,9 @@ export default class Player {
     }
 
     return { thisAlive: true, opponentAlive: true };
-  };
+  }
 
-  confuse = (actor: Player) => {
+  confuse(actor: Player) {
     this.log?.("Getting confused by player", actor);
 
     if (this.confusion?.turnsLeft) {
@@ -336,12 +336,12 @@ export default class Player {
     };
 
     this.log?.("Confused for", turnsLeft, "turns");
-  };
+  }
 
-  unConfuse = () => {
+  unConfuse() {
     this.log?.("Removing confusion");
     this.confusion = undefined;
-  };
+  }
 
   /**
    * Whether any in the condition group consisting of sleep, paralysis, poisoning is active.
@@ -352,7 +352,7 @@ export default class Player {
   private sleepParalysisPoisonGroup = () =>
     this.sleepingTurnsLeft || this.poisoned || this.paralyzed;
 
-  makeSleep = () => {
+  makeSleep() {
     this.log?.("Being told to sleep");
 
     if (this.sleepParalysisPoisonGroup()) {
@@ -362,9 +362,9 @@ export default class Player {
 
     this.sleepingTurnsLeft = Math.floor(this.RNG(1, 8));
     this.log?.("Sleeping for", this.sleepingTurnsLeft, "turns");
-  };
+  }
 
-  poison = () => {
+  poison() {
     this.log?.("Getting poisoned");
 
     if (this.Types.includes(Type.Poison)) {
@@ -378,9 +378,9 @@ export default class Player {
 
     this.poisoned = true;
     this.log?.("Am now poisoned");
-  };
+  }
 
-  paralyze = () => {
+  paralyze() {
     this.log?.("Getting paralyzed");
 
     if (this.sleepParalysisPoisonGroup()) {
@@ -390,25 +390,25 @@ export default class Player {
 
     this.paralyzed = true;
     this.log?.("Am now paralyzed");
-  };
+  }
 
-  waiveParalysisSpeedEffect = () => {
+  waiveParalysisSpeedEffect() {
     this.log?.("Waiving paralysis speed effect");
     this.paralysisSpeedEffectWaived = true;
-  };
+  }
 
-  deParalyze = () => {
+  deParalyze() {
     this.log?.("Removing paralysis and paralysis speed waiver (if it exists)");
 
     this.paralyzed = false;
     this.paralysisSpeedEffectWaived = false;
-  };
+  }
 
-  adjustStage = (
+  adjustStage(
     difference: number,
     stageAttr: "AttackStage" | "DefenseStage",
     type: "Normal" | "Special"
-  ) => {
+  ) {
     const previousStage = this[stageAttr][type];
     const newStage = Math.min(6, Math.max(-6, previousStage + difference));
 
@@ -434,9 +434,9 @@ export default class Player {
         this.stageBoostCounter
       );
     }
-  };
+  }
 
-  forceResetStages = () => {
+  forceResetStages() {
     this.log?.("Force resetting all stages and stage boost counter");
 
     this.AttackStage.Normal = 0;
@@ -445,7 +445,7 @@ export default class Player {
     this.DefenseStage.Special = 0;
 
     this.stageBoostCounter = 0;
-  };
+  }
 
   /**
    * Do the following computation:
@@ -471,10 +471,10 @@ export default class Player {
    * @param stage Between -6 and 6
    * @private
    */
-  private static getMultiplier(stage: number): number {
-    if (stage < 0) return 1 / this.getMultiplier(-stage);
+  private static getMultiplier = (stage: number): number => {
+    if (stage < 0) return 1 / Player.getMultiplier(-stage);
     return stage / 2 + 1;
-  }
+  };
 
   private RNG = (a: number, b: number) => this.random() * (b - a) + a;
 }
