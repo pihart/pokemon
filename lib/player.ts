@@ -6,12 +6,7 @@ import Resistance from "./resistance";
 type NormalSpecial<T = number> = { Normal: T; Special: T };
 
 export default abstract class Player {
-  protected abstract health: number;
-  private AttackStage: NormalSpecial = { Normal: 0, Special: 0 };
-  private DefenseStage: NormalSpecial = { Normal: 0, Special: 0 };
-  private stageBoostCounter: number;
-  private paralysisSpeedEffectWaived = false;
-
+  /* Player-specific constants */
   protected abstract readonly Types: Type[];
   abstract readonly Level: number;
   protected abstract readonly AttackPower: NormalSpecial;
@@ -20,23 +15,79 @@ export default abstract class Player {
   protected abstract readonly MaxHealth: number;
   protected abstract readonly Moves: Move[];
   protected abstract readonly CriticalDamagePct: number;
+  protected abstract readonly SuperPotionsLimit: number;
+
+  /* Runtime-mutable stats/data */
+  private AttackStage!: NormalSpecial;
+  private DefenseStage!: NormalSpecial;
+  private paralysisSpeedEffectWaived!: boolean;
+  private stageBoostCounter!: number;
+  // Mutable values defined upon immutable values
+  // need to be initially provided in the derived class
+  // because the constructor is called before the immutables are defined
+  protected abstract health: number;
   protected abstract superPotionsLeft: number;
 
-  protected constructor(
-    private readonly isHuman: boolean,
-    private readonly random: () => number,
-    private readonly log?: (...data: any[]) => void
-  ) {
-    this.stageBoostCounter = +isHuman;
-  }
-
+  /* Runtime-mutable states ("conditions") */
+  /**
+   * If defined, encodes the state of the current confusion.
+   * If undefined, no confusion is active.
+   * @private
+   */
   private confusion?: {
     turnsLeft: number;
     actor: Player;
   };
-  public sleepingTurnsLeft = 0;
-  private poisoned = false;
-  private paralyzed = false;
+  /**
+   * Determines the number of turns for which sleep remains active.
+   */
+  public sleepingTurnsLeft!: number;
+  /**
+   * Determines whether poisoned.
+   *
+   * Does not have any term limits.
+   * @private
+   */
+  private poisoned!: boolean;
+  /**
+   * Determines whether paralyzed.
+   *
+   * Does not have any term limits.
+   * @private
+   */
+  private paralyzed!: boolean;
+
+  /* Debugging dependencies */
+  private random!: () => number;
+  private log?: (...data: any[]) => void;
+
+  protected constructor(
+    private readonly isHuman: boolean,
+    random: () => number,
+    log?: (...data: any[]) => void
+  ) {
+    this.reset(random, log);
+  }
+
+  reset(random: () => number, log?: (...data: any[]) => void) {
+    this.log?.("Resetting; ending log session");
+
+    this.random = random;
+    this.log = log;
+    this.log?.("Using new log session");
+
+    this.health = this.MaxHealth;
+    this.AttackStage = { Normal: 0, Special: 0 };
+    this.DefenseStage = { Normal: 0, Special: 0 };
+    this.paralysisSpeedEffectWaived = false;
+    this.stageBoostCounter = +this.isHuman;
+    this.superPotionsLeft = this.SuperPotionsLimit;
+
+    this.confusion = undefined;
+    this.sleepingTurnsLeft = 0;
+    this.poisoned = false;
+    this.paralyzed = false;
+  }
 
   /**
    * @return Whether still alive
@@ -72,12 +123,14 @@ export default abstract class Player {
   private calcDamage = (move: MoveLike, actor: Player) => {
     this.log?.("Damage is noncritical");
     return this.baseDamage(move, actor, true);
-  }
+  };
 
   private calcCriticalDamage = (move: MoveLike, actor: Player) => {
     this.log?.("Damage is critical");
-    return ((2 * actor.Level + 5) / (actor.Level + 5)) *
-      this.baseDamage(move, actor, false);
+    return (
+      ((2 * actor.Level + 5) / (actor.Level + 5)) *
+      this.baseDamage(move, actor, false)
+    );
   };
 
   /**

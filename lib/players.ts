@@ -12,6 +12,7 @@ export class Weedle extends Player {
   SpeedStat = 170;
   Moves = [Move.PoisonSting];
   CriticalDamagePct = 50 / 512;
+  SuperPotionsLimit = 0;
   superPotionsLeft = 0;
 }
 
@@ -25,6 +26,7 @@ export class Gengar1 extends Player {
   SpeedStat = 137;
   Moves = [Move.ConfuseRay, Move.NightShade, Move.Hypnosis, Move.DreamEater];
   CriticalDamagePct = 110 / 512;
+  SuperPotionsLimit = Infinity;
   superPotionsLeft = Infinity;
 }
 export class Golbat extends Player {
@@ -37,6 +39,7 @@ export class Golbat extends Player {
   SpeedStat = 114;
   Moves = [Move.Supersonic, Move.ConfuseRay, Move.WingAttack, Move.Haze];
   CriticalDamagePct = 90 / 512;
+  SuperPotionsLimit = Infinity;
   superPotionsLeft = Infinity;
 }
 export class Haunter extends Player {
@@ -49,6 +52,7 @@ export class Haunter extends Player {
   SpeedStat = 118;
   Moves = [Move.ConfuseRay, Move.NightShade, Move.Hypnosis, Move.DreamEater];
   CriticalDamagePct = 95 / 512;
+  SuperPotionsLimit = Infinity;
   superPotionsLeft = Infinity;
 }
 export class Arbok extends Player {
@@ -61,6 +65,7 @@ export class Arbok extends Player {
   SpeedStat = 107;
   Moves = [Move.Bite, Move.Glare, Move.Screech, Move.Acid];
   CriticalDamagePct = 80 / 512;
+  SuperPotionsLimit = Infinity;
   superPotionsLeft = Infinity;
 }
 export class Gengar2 extends Player {
@@ -73,5 +78,6 @@ export class Gengar2 extends Player {
   SpeedStat = 146;
   Moves = [Move.ConfuseRay, Move.NightShade, Move.Toxic, Move.DreamEater];
   CriticalDamagePct = 110 / 512;
+  SuperPotionsLimit = Infinity;
   superPotionsLeft = Infinity;
 }
