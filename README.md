@@ -109,7 +109,7 @@ In particular, if `"false"` is entered in the command line, it will be treated a
 
 ##### Speed
 
-Expect running time of around `11µs` per iteration.
+Expect running time of around `9.8µs` per iteration.
 
 ##### Production config for bashing
 
