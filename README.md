@@ -109,7 +109,7 @@ In particular, if `"false"` is entered in the command line, it will be treated a
 
 ##### Speed
 
-Expect running time of around `9.8µs` per iteration.
+Expect running time of around `9.3-9.8µs` per iteration.
 
 ##### Production config for bashing
 
@@ -139,8 +139,8 @@ npm run playback <path-to-file>
 
 where `path-to-file` is the path to a requireable file which gives the array of randoms.
 
-If omitted, `path-to-file` defaults to an internal constant file, namely [`test/fail/1.json`].
+If omitted, `path-to-file` defaults to an internal constant file, namely [`test/fail/1.rands.json`].
 While expected to remain for the life of the project, this should not be relied on programmatically.
 
-[`test/fail/1.json`]: test/fail/1.json
+[`test/fail/1.rands.json`]: test/fail/1.rands.json
 [playback]: #playback

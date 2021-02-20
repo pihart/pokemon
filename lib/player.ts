@@ -2,6 +2,7 @@ import { Move, MoveLike } from "./move";
 import Type from "./type";
 import Resistances from "./resistances";
 import Resistance from "./resistance";
+import { PlayerLogger } from "./logger";
 
 type NormalSpecial<T = number> = { Normal: T; Special: T };
 
@@ -71,7 +72,7 @@ export default class Player {
 
   /* Debugging dependencies */
   private random!: () => number;
-  private log?: (...data: any[]) => void;
+  private logger?: Partial<PlayerLogger>;
 
   constructor(
     {
@@ -87,7 +88,7 @@ export default class Player {
     }: PlayerOptions,
     private readonly isHuman: boolean,
     random: () => number,
-    log?: (...data: any[]) => void
+    logger?: Partial<PlayerLogger>
   ) {
     this.Types = Types;
     this.Level = Level;
@@ -99,15 +100,16 @@ export default class Player {
     this.CriticalDamagePct = CriticalDamagePct;
     this.SuperPotionsLimit = SuperPotionsLimit;
 
-    this.reset(random, log);
+    this.reset(random, logger);
   }
 
-  reset(random: () => number, log?: (...data: any[]) => void) {
-    this.log?.("Resetting; ending log session");
+  reset(random: () => number, logger?: Partial<PlayerLogger>) {
+    this.logger?.Resetting?.();
+    this.logger?.LogSession?.("Ending");
 
     this.random = random;
-    this.log = log;
-    this.log?.("Using new log session");
+    this.logger = logger;
+    this.logger?.LogSession?.("Using new");
 
     this.health = this.MaxHealth;
     this.AttackStage = { Normal: 0, Special: 0 };
@@ -125,41 +127,41 @@ export default class Player {
   /**
    * @return Whether still alive
    */
-  receiveDamagingMove = (move: MoveLike, actor: Player) => {
-    this.log?.("Receiving move", move, "from", actor);
+  receiveDamagingMove(move: MoveLike, actor: Player) {
+    this.logger?.ReceivingMove?.(move, actor);
     return this.receiveDamage(
       this.random() < this.CriticalDamagePct
         ? this.calcCriticalDamage(move, actor)
         : this.calcDamage(move, actor)
     );
-  };
+  }
 
   /**
    * @return Whether still alive
    */
-  receiveDamage = (damage: number) => {
+  receiveDamage(damage: number) {
     const damageInt = Math.floor(damage);
 
-    this.log?.("Taking damage of", damageInt, "rounded from", damage);
-    this.log?.("Current health:", this.health, "of max health", this.MaxHealth);
+    this.logger?.Health?.(this.health, this.MaxHealth);
+    this.logger?.TakingDamage?.(damageInt, damage);
 
     this.health = Math.min(
       this.MaxHealth,
       Math.max(0, this.health - damageInt)
     );
 
-    this.log?.("Health is now", this.health);
+    this.logger?.Health?.(this.health, this.MaxHealth);
 
     return this.health > 0;
-  };
+  }
 
   private calcDamage = (move: MoveLike, actor: Player) => {
-    this.log?.("Damage is noncritical");
+    this.logger?.DamageType?.("noncritical");
     return this.baseDamage(move, actor, true);
   };
 
   private calcCriticalDamage = (move: MoveLike, actor: Player) => {
-    this.log?.("Damage is critical");
+    this.logger?.DamageType?.("critical");
     return (
       ((2 * actor.Level + 5) / (actor.Level + 5)) *
       this.baseDamage(move, actor, false)
@@ -246,39 +248,45 @@ export default class Player {
    * It actually happening depends on the current state of the player.
    * @param opponent
    */
-  playTurn = (
+  playTurn(
     takeSuperPotion: boolean,
     opponent: Player
   ):
     | { thisAlive: true; opponentAlive: boolean }
-    | { thisAlive: false; opponentAlive: true } => {
-    this.log?.("Playing turn", { takeSuperPotion, opponent });
+    | { thisAlive: false; opponentAlive: true } {
+    this.logger?.PlayingTurn?.({ takeSuperPotion, opponent });
 
     if (
       takeSuperPotion &&
       this.health < this.MaxHealth / 4 &&
       this.superPotionsLeft
     ) {
-      this.log?.("Taking super potion");
+      this.logger?.TakingSuperPotion?.();
       this.receiveDamage(-60);
       this.superPotionsLeft--;
-      this.log?.("Ending turn", "superPotionsLeft:", this.superPotionsLeft);
+      this.logger?.QuantityRemaining?.("Super potions", this.superPotionsLeft);
       return { thisAlive: true, opponentAlive: true };
     }
 
     if (this.sleepingTurnsLeft) {
-      this.log?.("Sleeping");
+      this.logger?.State?.("Sleeping");
       this.sleepingTurnsLeft--;
-      this.log?.("Ending turn", "sleepingTurnsLeft:", this.sleepingTurnsLeft);
+      this.logger?.QuantityRemaining?.(
+        "Sleeping Turns",
+        this.sleepingTurnsLeft
+      );
       return { thisAlive: true, opponentAlive: true };
     }
 
     if (this.confusion?.turnsLeft) {
-      this.log?.("Confused");
+      this.logger?.State?.("Confused");
       this.confusion.turnsLeft--;
-      this.log?.("confusionTurnsLeft:", this.confusion.turnsLeft);
+      this.logger?.QuantityRemaining?.(
+        "Confusion turns",
+        this.confusion.turnsLeft
+      );
       if (this.random() < 0.5) {
-        this.log?.("Doing confusion damage and ending turn");
+        this.logger?.EffectSuccess?.("Confusion", "successful");
         return {
           opponentAlive: true,
           thisAlive: this.receiveDamagingMove(
@@ -287,22 +295,25 @@ export default class Player {
           ),
         };
       }
-      this.log?.("Confusion did not work; continuing");
+      this.logger?.EffectSuccess?.("Confusion", "unsuccessful");
     }
 
     if (this.paralyzed) {
-      this.log?.("Paralyzed");
+      this.logger?.State?.("Paralyzed");
       if (this.random() < 0.25) {
-        this.log?.("Ending turn due to paralysis");
+        this.logger?.EffectSuccess?.("Paralysis", "successful");
         return { thisAlive: true, opponentAlive: true };
       }
-      this.log?.("Paralysis did not work; continuing");
+      this.logger?.EffectSuccess?.("Paralysis", "unsuccessful");
     }
 
-    const chosenMove = Math.floor(this.RNG(0, this.Moves.length));
-    this.log?.("Attempting to play move", chosenMove);
-    if (!this.Moves[chosenMove].execute(this, opponent, this.random)) {
-      this.log?.("Move killed opponent");
+    const chosenMoveIndex = Math.floor(this.RNG(0, this.Moves.length));
+    const chosenMove = this.Moves[chosenMoveIndex];
+
+    this.logger?.PlayingMove?.(chosenMoveIndex, chosenMove);
+
+    if (!chosenMove.execute(this, opponent, this.random)) {
+      this.logger?.MoveKilledOpponent?.();
       return {
         thisAlive: true,
         opponentAlive: false,
@@ -310,7 +321,7 @@ export default class Player {
     }
 
     if (this.poisoned) {
-      this.log?.("Poisoned; taking damage of 1/16 max");
+      this.logger?.State?.("Poisoned", "taking damage of 1/16 max");
       return {
         thisAlive: this.receiveDamage(this.MaxHealth / 16),
         opponentAlive: true,
@@ -318,13 +329,13 @@ export default class Player {
     }
 
     return { thisAlive: true, opponentAlive: true };
-  };
+  }
 
-  confuse = (actor: Player) => {
-    this.log?.("Getting confused by player", actor);
+  confuse(actor: Player) {
+    this.logger?.GettingCondition?.("confusion", actor);
 
     if (this.confusion?.turnsLeft) {
-      this.log?.("Already confused; cancelling");
+      this.logger?.CancelCondition?.("Already confused");
       return;
     }
 
@@ -335,13 +346,13 @@ export default class Player {
       turnsLeft,
     };
 
-    this.log?.("Confused for", turnsLeft, "turns");
-  };
+    this.logger?.QuantityRemaining?.("Confusion turns", turnsLeft);
+  }
 
-  unConfuse = () => {
-    this.log?.("Removing confusion");
+  unConfuse() {
+    this.logger?.RemovingCondition?.("confusion");
     this.confusion = undefined;
-  };
+  }
 
   /**
    * Whether any in the condition group consisting of sleep, paralysis, poisoning is active.
@@ -352,76 +363,70 @@ export default class Player {
   private sleepParalysisPoisonGroup = () =>
     this.sleepingTurnsLeft || this.poisoned || this.paralyzed;
 
-  makeSleep = () => {
-    this.log?.("Being told to sleep");
+  makeSleep() {
+    this.logger?.GettingCondition?.("sleep");
 
     if (this.sleepParalysisPoisonGroup()) {
-      this.log?.("Already affected by condition in group; cancelling");
+      this.logger?.CancelCondition?.("Already affected by condition in group");
       return;
     }
 
     this.sleepingTurnsLeft = Math.floor(this.RNG(1, 8));
-    this.log?.("Sleeping for", this.sleepingTurnsLeft, "turns");
-  };
 
-  poison = () => {
-    this.log?.("Getting poisoned");
+    this.logger?.QuantityRemaining?.("Sleeping Turns", this.sleepingTurnsLeft);
+  }
+
+  poison() {
+    this.logger?.GettingCondition?.("poison");
 
     if (this.Types.includes(Type.Poison)) {
-      this.log?.("Am poison type; cannot get poisoned; cancelling");
+      this.logger?.CancelCondition?.("Am poison type; cannot get poisoned");
       return;
     }
     if (this.sleepParalysisPoisonGroup()) {
-      this.log?.("Already affected by condition in group; cancelling");
+      this.logger?.CancelCondition?.("Already affected by condition in group");
       return;
     }
 
     this.poisoned = true;
-    this.log?.("Am now poisoned");
-  };
+  }
 
-  paralyze = () => {
-    this.log?.("Getting paralyzed");
+  paralyze() {
+    this.logger?.GettingCondition?.("paralysis");
 
     if (this.sleepParalysisPoisonGroup()) {
-      this.log?.("Already affected by condition in group; cancelling");
+      this.logger?.CancelCondition?.("Already affected by condition in group");
       return;
     }
 
     this.paralyzed = true;
-    this.log?.("Am now paralyzed");
-  };
+  }
 
-  waiveParalysisSpeedEffect = () => {
-    this.log?.("Waiving paralysis speed effect");
+  waiveParalysisSpeedEffect() {
+    this.logger?.WaivingParalysisSpeedEffect?.();
     this.paralysisSpeedEffectWaived = true;
-  };
+  }
 
-  deParalyze = () => {
-    this.log?.("Removing paralysis and paralysis speed waiver (if it exists)");
+  deParalyze() {
+    this.logger?.RemovingCondition?.("paralysis and paralysis speed waiver");
 
     this.paralyzed = false;
     this.paralysisSpeedEffectWaived = false;
-  };
+  }
 
-  adjustStage = (
+  adjustStage(
     difference: number,
     stageAttr: "AttackStage" | "DefenseStage",
     type: "Normal" | "Special"
-  ) => {
+  ) {
     const previousStage = this[stageAttr][type];
     const newStage = Math.min(6, Math.max(-6, previousStage + difference));
 
-    this.log?.(
-      "Changing stage",
+    this.logger?.ChangingStage?.(
       stageAttr,
-      "of type",
       type,
-      "by",
       difference,
-      "from",
       previousStage,
-      "to",
       newStage
     );
 
@@ -429,15 +434,12 @@ export default class Player {
 
     if (this.isHuman) {
       this.stageBoostCounter++;
-      this.log?.(
-        "Am human; incrementing stageBoostCounter to",
-        this.stageBoostCounter
-      );
+      this.logger?.IncrementingStageBoostCounter?.(this.stageBoostCounter);
     }
-  };
+  }
 
-  forceResetStages = () => {
-    this.log?.("Force resetting all stages and stage boost counter");
+  forceResetStages() {
+    this.logger?.ForceResettingStagesAndStageBoostCounter?.();
 
     this.AttackStage.Normal = 0;
     this.AttackStage.Special = 0;
@@ -445,7 +447,7 @@ export default class Player {
     this.DefenseStage.Special = 0;
 
     this.stageBoostCounter = 0;
-  };
+  }
 
   /**
    * Do the following computation:
@@ -471,10 +473,10 @@ export default class Player {
    * @param stage Between -6 and 6
    * @private
    */
-  private static getMultiplier(stage: number): number {
-    if (stage < 0) return 1 / this.getMultiplier(-stage);
+  private static getMultiplier = (stage: number): number => {
+    if (stage < 0) return 1 / Player.getMultiplier(-stage);
     return stage / 2 + 1;
-  }
+  };
 
   private RNG = (a: number, b: number) => this.random() * (b - a) + a;
 }

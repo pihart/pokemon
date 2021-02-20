@@ -1,4 +1,5 @@
 import Team from "./team";
+import { GameLogger } from "./logger";
 
 export default class Game {
   public randomLog: number[] = [];
@@ -7,19 +8,19 @@ export default class Game {
     private readonly teamA: Team,
     private readonly teamB: Team,
     private readonly random: () => number,
-    private readonly log?: (...data: any[]) => void
+    private readonly logger?: Partial<GameLogger>
   ) {}
 
   /**
    * @return Whether Team A wins
    */
   play(): boolean {
-    this.log?.("Playing until winner");
+    this.logger?.GameMode?.("until winner");
     let AWins;
     while (AWins === undefined) {
       AWins = this.playRound();
     }
-    this.log?.("Winner is", AWins ? "Team A" : "Team B");
+    this.logger?.Winner?.(AWins ? "A" : "B");
     return AWins;
   }
 
@@ -27,21 +28,21 @@ export default class Game {
    * @return Whether Team A wins
    */
   playRound(): boolean | void {
-    this.log?.("Playing round");
+    this.logger?.GameMode?.("round");
 
     const { teamA: A, teamB: B } = this;
 
     const a = A.getSpeed();
     const b = B.getSpeed();
-    this.log?.("Speeds:", { a, b });
+    this.logger?.Speeds?.({ a, b });
 
     const AFirst = a === b ? this.random() < 0.5 : a > b;
-    this.log?.("A plays first?", AFirst);
+    this.logger?.PlayingFirst?.(AFirst ? "A" : "B");
 
     const teamOrder: [Team, Team] = AFirst ? [A, B] : [B, A];
 
     const winner = Game.playRoundGivenTeamOrder(...teamOrder);
-    this.log?.("Round winner:", winner ?? "none", { AFirst });
+    this.logger?.RoundWinner?.(winner ?? "none", AFirst);
 
     if (winner === "first") return AFirst;
     if (winner === "second") return !AFirst;
@@ -53,7 +54,7 @@ export default class Game {
   private static playRoundGivenTeamOrder(
     first: Team,
     second: Team
-  ): "first" | "second" | void {
+  ): "first" | "second" | undefined {
     const turn1 = first.playTurn(second);
 
     if (!turn1.thisActive) return "second";
@@ -63,5 +64,7 @@ export default class Game {
 
     if (!turn2.thisActive) return "first";
     if (!turn2.opponentActive) return "second";
+
+    return;
   }
 }
