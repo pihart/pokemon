@@ -1,0 +1,8 @@
+/node_modules/
+/docs/
+/lib/
+/script/
+/.github/
+/.idea/
+
+**/*.key
