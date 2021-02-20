@@ -16,7 +16,8 @@
     "version": "node -p \"require('./package.json').version\""
   },
   "bin": {
-    "weedle": "index.js"
+    "weedle": "index.js",
+    "pokemon-playback": "playback.js"
   },
   "keywords": [],
   "author": "",
