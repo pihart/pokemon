@@ -1,0 +1,249 @@
+<!--
+https://github.com/TypeStrong/typedoc-default-themes/blob/0fa4edd7ab0b45c7d33cf232e85a92a05fa45552/src/default/layouts/default.hbs
+-->
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>pokemon</title>
+	<meta name="description" content="Documentation for pokemon">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/solid.css" integrity="sha384-6qO6EOFIDfvv6uzAzozX/BvMu/qkIIHxWYOVMjpVjX+NtPuNyd3YiOEflKIIV2ka" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/fontawesome.css" integrity="sha384-Hx1dya9ptAdKu2hLNR5C2Cwgm+wCfwD0VMGE6jk5OUxxa9I58YfxOCwEtRog+3wk" crossorigin="anonymous">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">pokemon</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>pokemon</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#pokemon" id="pokemon" style="color: inherit; text-decoration: none;">
+					<h1>pokemon</h1>
+				</a>
+				<p>I still don&#39;t know what this does.</p>
+				<p>Simulates something to do with pokemon.</p>
+				<a href="#library" id="library" style="color: inherit; text-decoration: none;">
+					<h2>Library</h2>
+				</a>
+				<p><code>lib/</code> should have implemented most rules.</p>
+				<p>To create a player:</p>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Weedle</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Player</span><span style="color: #000000">(</span>
+<span style="color: #000000">  </span><span style="color: #001080">Players</span><span style="color: #000000">.</span><span style="color: #001080">Weedle</span><span style="color: #000000">, </span><span style="color: #008000">// The configuration for the player</span>
+<span style="color: #000000">  </span><span style="color: #008000">// Presets are exported from players.ts.</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">true</span><span style="color: #000000">, </span><span style="color: #008000">// Whether the player is human;</span>
+<span style="color: #000000">  </span><span style="color: #008000">// applies different rules</span>
+<span style="color: #000000">  </span><span style="color: #267F99">Math</span><span style="color: #000000">.</span><span style="color: #795E26">random</span><span style="color: #000000"> </span><span style="color: #008000">// The function to generate random numbers</span>
+<span style="color: #000000">  </span><span style="color: #008000">// You can build a closure to log or playback random numbers</span>
+<span style="color: #000000">);</span>
+</code></pre>
+				<p>To create a team:</p>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">A</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Team</span><span style="color: #000000">(</span>
+<span style="color: #000000">  [</span><span style="color: #001080">Weedle</span><span style="color: #000000">], </span><span style="color: #008000">// An array of instantiated Players on the team</span>
+<span style="color: #000000">  </span><span style="color: #267F99">Math</span><span style="color: #000000">.</span><span style="color: #795E26">random</span><span style="color: #000000"> </span><span style="color: #008000">// The function to generate random numbers</span>
+<span style="color: #000000">);</span>
+</code></pre>
+				<p>To create a game:</p>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">game</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Game</span><span style="color: #000000">(</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">A</span><span style="color: #000000">, </span><span style="color: #008000">// One of the teams</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">B</span><span style="color: #000000">, </span><span style="color: #008000">// The other team</span>
+<span style="color: #000000">  </span><span style="color: #001080">random</span><span style="color: #000000"> </span><span style="color: #008000">// The function to generate random numbers</span>
+<span style="color: #000000">);</span>
+</code></pre>
+				<p>To play a round (one turn for each player) of the game:</p>
+				<pre><code class="language-js"><span style="color: #008000">// If there is a winner, returns a boolean indicating whether team A (from constructor) is the winner.</span>
+<span style="color: #008000">// Otherwise, returns undefined.</span>
+<span style="color: #001080">game</span><span style="color: #000000">.</span><span style="color: #795E26">playRound</span><span style="color: #000000">();</span>
+</code></pre>
+				<p>To finish the game until one team wins:</p>
+				<pre><code class="language-js"><span style="color: #008000">// Returns a boolean indicating whether team A (from constructor) is the winner.</span>
+<span style="color: #001080">game</span><span style="color: #000000">.</span><span style="color: #795E26">play</span><span style="color: #000000">();</span>
+</code></pre>
+				<a href="#weedle-vs-agatha" id="weedle-vs-agatha" style="color: inherit; text-decoration: none;">
+					<h2>Weedle vs Agatha</h2>
+				</a>
+				<p>Simulates a game that is supposedly important?
+				Very unlikely for team A to win this game.</p>
+				<a href="#teams" id="teams" style="color: inherit; text-decoration: none;">
+					<h3>Teams</h3>
+				</a>
+				<p>Simulates a game with these teams:</p>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">A</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Team</span><span style="color: #000000">([</span><span style="color: #001080">Players</span><span style="color: #000000">.</span><span style="color: #001080">Weedle</span><span style="color: #000000">].</span><span style="color: #795E26">map</span><span style="color: #000000">(</span><span style="color: #795E26">createPlayer</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">, </span><span style="color: #001080">random</span><span style="color: #000000">)), </span><span style="color: #001080">random</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">B</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Team</span><span style="color: #000000">(</span>
+<span style="color: #000000">  [</span>
+<span style="color: #000000">    </span><span style="color: #001080">Players</span><span style="color: #000000">.</span><span style="color: #001080">Gengar1</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">Players</span><span style="color: #000000">.</span><span style="color: #001080">Golbat</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">Players</span><span style="color: #000000">.</span><span style="color: #001080">Haunter</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">Players</span><span style="color: #000000">.</span><span style="color: #001080">Arbok</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">Players</span><span style="color: #000000">.</span><span style="color: #001080">Gengar2</span><span style="color: #000000">,</span>
+<span style="color: #000000">  ].</span><span style="color: #795E26">map</span><span style="color: #000000">(</span><span style="color: #795E26">createPlayer</span><span style="color: #000000">(</span><span style="color: #0000FF">false</span><span style="color: #000000">, </span><span style="color: #001080">random</span><span style="color: #000000">)),</span>
+<span style="color: #000000">  </span><span style="color: #001080">random</span>
+<span style="color: #000000">);</span>
+</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h3>Usage</h3>
+				</a>
+				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
+					<h4>Setup</h4>
+				</a>
+				<p>Once per update, you must run</p>
+				<pre><code class="language-shell"><span style="color: #000000">npm i</span>
+</code></pre>
+				<a href="#run" id="run" style="color: inherit; text-decoration: none;">
+					<h4>Run</h4>
+				</a>
+				<pre><code class="language-shell"><span style="color: #000000">npm start &lt;maxNumIterations = 1000&gt; &lt;progressCheckInterval = floor(maxNumIterations / 100)&gt; &lt;continueOnSuccess = false&gt; &lt;divideProgressLogByInterval = false&gt;</span>
+</code></pre>
+				<p>This will run up to <code>maxNumIterations</code> simulations, halting earlier if and only if team <code>A</code> wins and <code>!continueOnSuccess</code>.</p>
+				<p>It will log the elapsed time and current iteration (divided by <code>progressCheckInterval</code> if <code>divideProgressLogByInterval</code>) before every <code>progressCheckInterval</code> number of iterations;
+				you can set <code>progressCheckInterval = 0</code> to not have this happen, or to some sufficiently large number to have it occur only at step <code>0</code>.</p>
+				<p>On success (team <code>A</code>&#39;s win), it will log <em>and</em> append a record to the end of the file <code>avi.log</code> (or create it if it does not exist).
+					This log will include the current (<strong>not elapsed</strong>) time, the iteration at which the success occurred, and the entire sequence of random numbers in that simulation.
+				This is sufficient information to replay the game without loss (see <a href="#playback">Playback</a>).</p>
+				<p><strong>Note:</strong>
+					<code>continueOnSuccess</code> and <code>divideProgressLogByInterval</code> check for JavaScript truthiness.
+				In particular, if <code>&quot;false&quot;</code> is entered in the command line, it will be treated as <code>true</code>!</p>
+				<a href="#speed" id="speed" style="color: inherit; text-decoration: none;">
+					<h5>Speed</h5>
+				</a>
+				<p>Expect running time of around <code>9.2-9.7µs</code> per iteration.</p>
+				<a href="#production-config-for-bashing" id="production-config-for-bashing" style="color: inherit; text-decoration: none;">
+					<h5>Production config for bashing</h5>
+				</a>
+				<p>When bashing out simulations, I generally use</p>
+				<pre><code class="language-shell"><span style="color: #000000">npm start Infinity 1e6 </span><span style="color: #795E26">true</span><span style="color: #000000"> </span><span style="color: #795E26">true</span><span style="color: #000000"> &gt; run.log &amp;</span>
+</code></pre>
+				<a href="#playback" id="playback" style="color: inherit; text-decoration: none;">
+					<h2>Playback</h2>
+				</a>
+				<p>Playback any run given its sequence of random numbers:</p>
+				<a href="#setup-1" id="setup-1" style="color: inherit; text-decoration: none;">
+					<h3>Setup</h3>
+				</a>
+				<p>Once per update, you must run</p>
+				<pre><code class="language-shell"><span style="color: #000000">npm i</span>
+</code></pre>
+				<a href="#run-1" id="run-1" style="color: inherit; text-decoration: none;">
+					<h3>Run</h3>
+				</a>
+				<pre><code class="language-shell"><span style="color: #000000">npm run playback &lt;path-to-file&gt;</span>
+</code></pre>
+				<p>where <code>path-to-file</code> is the path to a requireable file which gives the array of randoms.</p>
+				<p>If omitted, <code>path-to-file</code> defaults to an internal constant file, namely <a href="test/fail/1.rands.json"><code>test/fail/1.rands.json</code></a>.
+				While expected to remain for the life of the project, this should not be relied on programmatically.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/players.html">Players</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/descriptivelogger.html" class="tsd-kind-icon">Descriptive<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/game.html" class="tsd-kind-icon">Game</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/player.html" class="tsd-kind-icon">Player</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/team.html" class="tsd-kind-icon">Team</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/gamelogger.html" class="tsd-kind-icon">Game<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/log.html" class="tsd-kind-icon">Log</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/playerlogger.html" class="tsd-kind-icon">Player<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/teamlogger.html" class="tsd-kind-icon">Team<wbr>Logger</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

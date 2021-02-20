@@ -1,0 +1,24 @@
+div.box {
+  padding: 0.5em 1em;
+  border: 2px solid transparent;
+  border-left-width: 3em;
+  margin-bottom: 1em;
+}
+
+div.box > i {
+  display: inline-block;
+  margin-left: -3em;
+  margin-right: 2em;
+  color: #ffffff;
+}
+
+div.box > ul,
+div.box > ol {
+  margin: 0;
+  display: inline-grid;
+}
+
+div.warning {
+  border-color: #dd840080;
+  background: #dd840080;
+}
