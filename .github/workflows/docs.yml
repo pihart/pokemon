@@ -1,0 +1,34 @@
+name: Documentation
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 12
+
+      - name: Install Node.js dependencies
+        run: npm ci
+        
+      - name: Run tests
+        run: npm test
+
+      - name: Generate Documentation
+        run: npm run docs
+
+      - name: Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
