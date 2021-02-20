@@ -9,7 +9,7 @@
     "postinstall": "npm run build",
     "start": "node index.js",
     "pretest": "npm run build",
-    "test": "node test/index.js",
+    "test": "ts-node test/index.ts",
     "playback": "node playback.js",
     "docs": "tdx lib/index.ts"
   },
