@@ -1,5 +1,5 @@
-import { GameLogger, Player, PlayerLogger, TeamLogger } from "../dist/lib";
-import { Move, MoveLike } from "../dist/lib/move";
+import { GameLogger, Player, PlayerLogger, TeamLogger } from "../lib";
+import { Move, MoveLike } from "../lib/move";
 
 export default class TestingLogger
   implements GameLogger, TeamLogger, PlayerLogger {
@@ -10,6 +10,11 @@ export default class TestingLogger
       [action]: data,
     });
   }
+
+  /**
+   * Not complete but the other steps (e.g. Team) should take care of this
+   */
+  private serializePlayer = (player: Player) => player.sleepingTurnsLeft;
 
   CancelCondition(
     reason:
@@ -67,7 +72,11 @@ export default class TestingLogger
     condition: "sleep" | "paralysis" | "poison" | "confusion",
     actor?: Player
   ): void {
-    this.record("GettingCondition", condition, { ...actor });
+    this.record(
+      "GettingCondition",
+      condition,
+      actor === undefined ? "No player" : this.serializePlayer(actor)
+    );
   }
 
   Health(current: number, max: number): void {
@@ -101,11 +110,11 @@ export default class TestingLogger
     takeSuperPotion: boolean;
     opponent: Player;
   }): void {
-    this.record("PlayingTurn", takeSuperPotion, { ...opponent });
+    this.record("PlayingTurn", takeSuperPotion, this.serializePlayer(opponent));
   }
 
   PlayingTurnAgainst(player: Player): void {
-    this.record("PlayingTurnAgainst", { ...player });
+    this.record("PlayingTurnAgainst", this.serializePlayer(player));
   }
 
   QuantityRemaining(
@@ -116,14 +125,11 @@ export default class TestingLogger
   }
 
   ReceivingMove(move: MoveLike, opponent: Player): void {
-    this.record("ReceivingMove", { ...move }, { ...opponent });
+    this.record("ReceivingMove", { ...move }, this.serializePlayer(opponent));
   }
 
   RemainingPlayers(players: Player[]): void {
-    this.record(
-      "RemainingPlayers",
-      players.map((player) => ({ ...player }))
-    );
+    this.record("RemainingPlayers", players.map(this.serializePlayer));
   }
 
   RemovingCondition(
@@ -170,7 +176,7 @@ export default class TestingLogger
   }
 
   TerminatingPlayer(index: number, value: Player): void {
-    this.record("TerminatingPlayer", index, { ...value });
+    this.record("TerminatingPlayer", index, this.serializePlayer(value));
   }
 
   WaivingParalysisSpeedEffect(): void {
