@@ -12,7 +12,8 @@
     "test": "ts-node test/index.ts",
     "playback": "node playback.js",
     "docs": "tdx lib/index.ts",
-    "createtests": "ts-node test/createTests.ts"
+    "createtests": "ts-node test/createTests.ts",
+    "version": "node -p \"require('./package.json').version\""
   },
   "keywords": [],
   "author": "",
