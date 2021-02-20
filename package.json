@@ -1,5 +1,5 @@
 {
-  "name": "pokemon",
+  "name": "@mehra/pokemon",
   "version": "6.1.1",
   "description": "I have no idea what this actually does",
   "main": "dist/lib/index.js",
