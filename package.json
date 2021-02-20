@@ -15,6 +15,9 @@
     "createtests": "ts-node test/createTests.ts",
     "version": "node -p \"require('./package.json').version\""
   },
+  "bin": {
+    "weedle": "index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
