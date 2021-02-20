@@ -67,8 +67,22 @@ https://github.com/TypeStrong/typedoc-default-themes/blob/0fa4edd7ab0b45c7d33cf2
 				<a href="#pokemon" id="pokemon" style="color: inherit; text-decoration: none;">
 					<h1>pokemon</h1>
 				</a>
+				<p><a href="https://www.npmjs.com/package/@mehra/ts"><img src="https://img.shields.io/npm/v/@mehra/pokemon.svg" alt="npm version"></a>
+				<a href="https://pihart.github.io/ts"><img src="https://github.com/pihart/pokemon/workflows/Documentation/badge.svg" alt="documentation status"></a></p>
 				<p>I still don&#39;t know what this does.</p>
-				<p>Simulates something to do with pokemon.</p>
+				<p>Simulates something to do with Pokemon Battle.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<pre><code class="language-shell"><span style="color: #000000">npm i @mehra/pokemon</span>
+</code></pre>
+				<a href="#links" id="links" style="color: inherit; text-decoration: none;">
+					<h2>Links</h2>
+				</a>
+				<ul>
+					<li><a href="https://pihart.github.io/ts">Documentation</a></li>
+					<li><a href="https://github.com/pihart/ts">Source</a></li>
+				</ul>
 				<a href="#library" id="library" style="color: inherit; text-decoration: none;">
 					<h2>Library</h2>
 				</a>
@@ -129,16 +143,7 @@ https://github.com/TypeStrong/typedoc-default-themes/blob/0fa4edd7ab0b45c7d33cf2
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h3>Usage</h3>
 				</a>
-				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
-					<h4>Setup</h4>
-				</a>
-				<p>Once per update, you must run</p>
-				<pre><code class="language-shell"><span style="color: #000000">npm i</span>
-</code></pre>
-				<a href="#run" id="run" style="color: inherit; text-decoration: none;">
-					<h4>Run</h4>
-				</a>
-				<pre><code class="language-shell"><span style="color: #000000">npm start &lt;maxNumIterations = 1000&gt; &lt;progressCheckInterval = floor(maxNumIterations / 100)&gt; &lt;continueOnSuccess = false&gt; &lt;divideProgressLogByInterval = false&gt;</span>
+				<pre><code class="language-shell"><span style="color: #000000">weedle &lt;maxNumIterations = 1000&gt; &lt;progressCheckInterval = floor(maxNumIterations / 100)&gt; &lt;continueOnSuccess = false&gt; &lt;divideProgressLogByInterval = false&gt;</span>
 </code></pre>
 				<p>This will run up to <code>maxNumIterations</code> simulations, halting earlier if and only if team <code>A</code> wins and <code>!continueOnSuccess</code>.</p>
 				<p>It will log the elapsed time and current iteration (divided by <code>progressCheckInterval</code> if <code>divideProgressLogByInterval</code>) before every <code>progressCheckInterval</code> number of iterations;
@@ -150,29 +155,20 @@ https://github.com/TypeStrong/typedoc-default-themes/blob/0fa4edd7ab0b45c7d33cf2
 					<code>continueOnSuccess</code> and <code>divideProgressLogByInterval</code> check for JavaScript truthiness.
 				In particular, if <code>&quot;false&quot;</code> is entered in the command line, it will be treated as <code>true</code>!</p>
 				<a href="#speed" id="speed" style="color: inherit; text-decoration: none;">
-					<h5>Speed</h5>
+					<h3>Speed</h3>
 				</a>
 				<p>Expect running time of around <code>9.2-9.7µs</code> per iteration.</p>
 				<a href="#production-config-for-bashing" id="production-config-for-bashing" style="color: inherit; text-decoration: none;">
-					<h5>Production config for bashing</h5>
+					<h3>Production config for bashing</h3>
 				</a>
 				<p>When bashing out simulations, I generally use</p>
-				<pre><code class="language-shell"><span style="color: #000000">npm start Infinity 1e6 </span><span style="color: #795E26">true</span><span style="color: #000000"> </span><span style="color: #795E26">true</span><span style="color: #000000"> &gt; run.log &amp;</span>
+				<pre><code class="language-shell"><span style="color: #000000">weedle Infinity 1e6 </span><span style="color: #795E26">true</span><span style="color: #000000"> </span><span style="color: #795E26">true</span><span style="color: #000000"> &gt; run.log &amp;</span>
 </code></pre>
 				<a href="#playback" id="playback" style="color: inherit; text-decoration: none;">
 					<h2>Playback</h2>
 				</a>
 				<p>Playback any run given its sequence of random numbers:</p>
-				<a href="#setup-1" id="setup-1" style="color: inherit; text-decoration: none;">
-					<h3>Setup</h3>
-				</a>
-				<p>Once per update, you must run</p>
-				<pre><code class="language-shell"><span style="color: #000000">npm i</span>
-</code></pre>
-				<a href="#run-1" id="run-1" style="color: inherit; text-decoration: none;">
-					<h3>Run</h3>
-				</a>
-				<pre><code class="language-shell"><span style="color: #000000">npm run playback &lt;path-to-file&gt;</span>
+				<pre><code class="language-shell"><span style="color: #000000">pokemon-playback &lt;path-to-file&gt;</span>
 </code></pre>
 				<p>where <code>path-to-file</code> is the path to a requireable file which gives the array of randoms.</p>
 				<p>If omitted, <code>path-to-file</code> defaults to an internal constant file, namely <a href="test/fail/1.rands.json"><code>test/fail/1.rands.json</code></a>.
