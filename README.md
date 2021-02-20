@@ -1,8 +1,22 @@
 # pokemon
 
+[![npm version](https://img.shields.io/npm/v/@mehra/pokemon.svg)][npm]
+[![documentation status](https://github.com/pihart/pokemon/workflows/Documentation/badge.svg)][docs]
+
 I still don't know what this does.
 
-Simulates something to do with pokemon.
+Simulates something to do with Pokemon Battle.
+
+## Installation
+
+```shell
+npm i @mehra/pokemon
+```
+
+## Links
+
+- [Documentation][docs]
+- [Source]
 
 ## Library
 
@@ -80,18 +94,8 @@ const B = new Team(
 
 ### Usage
 
-#### Setup
-
-Once per update, you must run
-
 ```shell
-npm i
-```
-
-#### Run
-
-```shell
-npm start <maxNumIterations = 1000> <progressCheckInterval = floor(maxNumIterations / 100)> <continueOnSuccess = false> <divideProgressLogByInterval = false>
+weedle <maxNumIterations = 1000> <progressCheckInterval = floor(maxNumIterations / 100)> <continueOnSuccess = false> <divideProgressLogByInterval = false>
 ```
 
 This will run up to `maxNumIterations` simulations, halting earlier if and only if team `A` wins and `!continueOnSuccess`.
@@ -107,34 +111,24 @@ This is sufficient information to replay the game without loss (see [Playback]).
 `continueOnSuccess` and `divideProgressLogByInterval` check for JavaScript truthiness.
 In particular, if `"false"` is entered in the command line, it will be treated as `true`!
 
-##### Speed
+### Speed
 
 Expect running time of around `9.2-9.7µs` per iteration.
 
-##### Production config for bashing
+### Production config for bashing
 
 When bashing out simulations, I generally use
 
 ```shell
-npm start Infinity 1e6 true true > run.log &
+weedle Infinity 1e6 true true > run.log &
 ```
 
 ## Playback
 
 Playback any run given its sequence of random numbers:
 
-### Setup
-
-Once per update, you must run
-
 ```shell
-npm i
-```
-
-### Run
-
-```shell
-npm run playback <path-to-file>
+pokemon-playback <path-to-file>
 ```
 
 where `path-to-file` is the path to a requireable file which gives the array of randoms.
@@ -144,3 +138,6 @@ While expected to remain for the life of the project, this should not be relied 
 
 [`test/fail/1.rands.json`]: test/fail/1.rands.json
 [playback]: #playback
+[npm]: https://www.npmjs.com/package/@mehra/ts
+[source]: https://github.com/pihart/ts
+[docs]: https://pihart.github.io/ts
