@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const { CustomError } = require("@mehra/ts");
 const { appendFileSync } = require("fs");
 
