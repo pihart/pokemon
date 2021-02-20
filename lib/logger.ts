@@ -1,9 +1,6 @@
 import Player from "./player";
 import { Move, MoveLike } from "./move";
 
-type Team = "A" | "B";
-type TeamFn = (team: Team) => void;
-
 /**
  * A standard logging function, like `console.log`.
  */
@@ -13,24 +10,24 @@ export interface Log {
 }
 
 interface Logger {
-  LogSession: (action: "Ending" | "Using new") => void;
+  LogSession(action: "Ending" | "Using new"): void;
 }
 
 /**
  * An intentioned logger specific to game orchestrator of this application.
  */
 export interface GameLogger extends Logger {
-  Winner: TeamFn;
-  GameMode: (mode: "round" | "until winner") => void;
-  Speeds: (speeds: { a: number; b: number }) => void;
-  PlayingFirst: TeamFn;
-  RoundWinner: (winner: "first" | "second" | "none", AFirst: boolean) => void;
+  Winner(team: "A" | "B"): void;
+  GameMode(mode: "round" | "until winner"): void;
+  Speeds(speeds: { a: number; b: number }): void;
+  PlayingFirst(team: "A" | "B"): void;
+  RoundWinner(winner: "first" | "second" | "none", AFirst: boolean): void;
 }
 
 export interface TeamLogger extends Logger {
-  PlayingTurnAgainst: (player: Player) => void;
+  PlayingTurnAgainst(player: Player): void;
 
-  DieRollValue: (value: number) => void;
+  DieRollValue(value: number): void;
 
   /**
    * To indicate that a swap is occurring.
@@ -39,68 +36,65 @@ export interface TeamLogger extends Logger {
    * @param newIndex Index of ending player
    * @warn Indices do not necessarily represent the original order of players as elements are removed from the array.
    */
-  SwappingPlayer: (
+  SwappingPlayer(
     swapType: "Following existing" | "Creating new",
     oldIndex: number,
     newIndex: number
-  ) => void;
+  ): void;
 
-  Death: (party: "Opponent" | "Own player") => void;
+  Death(party: "Opponent" | "Own player"): void;
 
   /**
    * @param message Take this parameter so that meaning of the log is clear at the call site.
    */
-  EndingTurn: (message: "No deaths") => void;
+  EndingTurn(message: "No deaths"): void;
 
-  TerminatingPlayer: (index: number, value: Player) => void;
+  TerminatingPlayer(index: number, value: Player): void;
 
-  RemainingPlayers: (players: Player[]) => void;
+  RemainingPlayers(players: Player[]): void;
 }
 
 export interface PlayerLogger extends Logger {
-  Resetting: () => void;
-  ReceivingMove: (move: MoveLike, opponent: Player) => void;
-  Health: (current: number, max: number) => void;
-  TakingDamage: (rounded: number, preRound: number) => void;
-  DamageType: (type: "critical" | "noncritical") => void;
-  PlayingTurn: (options: {
-    takeSuperPotion: boolean;
-    opponent: Player;
-  }) => void;
-  TakingSuperPotion: () => void;
-  State: ((state: "Sleeping" | "Confused" | "Paralyzed") => void) &
-    ((state: "Poisoned", message: "taking damage of 1/16 max") => void);
-  EffectSuccess: (
+  Resetting(): void;
+  ReceivingMove(move: MoveLike, opponent: Player): void;
+  Health(current: number, max: number): void;
+  TakingDamage(rounded: number, preRound: number): void;
+  DamageType(type: "critical" | "noncritical"): void;
+  PlayingTurn(options: { takeSuperPotion: boolean; opponent: Player }): void;
+  TakingSuperPotion(): void;
+  State(state: "Sleeping" | "Confused" | "Paralyzed"): void;
+  State(state: "Poisoned", message: "taking damage of 1/16 max"): void;
+  EffectSuccess(
     effect: "Confusion" | "Paralysis",
     status: "successful" | "unsuccessful"
-  ) => void;
-  QuantityRemaining: (
+  ): void;
+  QuantityRemaining(
     type: "Super potions" | "Confusion turns" | "Sleeping Turns",
     quantity: number
-  ) => void;
-  PlayingMove: (index: number, move: Move) => void;
-  MoveKilledOpponent: () => void;
-  GettingCondition: ((condition: "sleep" | "paralysis" | "poison") => void) &
-    ((condition: "confusion", actor: Player) => void);
-  CancelCondition: (
+  ): void;
+  PlayingMove(index: number, move: Move): void;
+  MoveKilledOpponent(): void;
+  GettingCondition(condition: "sleep" | "paralysis" | "poison"): void;
+  GettingCondition(condition: "confusion", actor: Player): void;
+  CancelCondition(
     reason:
       | "Already confused"
       | "Already affected by condition in group"
       | "Am poison type; cannot get poisoned"
-  ) => void;
-  RemovingCondition: (
+  ): void;
+  RemovingCondition(
     condition: "confusion" | "paralysis and paralysis speed waiver"
-  ) => void;
-  WaivingParalysisSpeedEffect: () => void;
-  ChangingStage: (
+  ): void;
+  WaivingParalysisSpeedEffect(): void;
+  ChangingStage(
     stage: "AttackStage" | "DefenseStage",
     type: "Normal" | "Special",
     difference: number,
     from: number,
     to: number
-  ) => void;
-  IncrementingStageBoostCounter: (valueAfter: number) => void;
-  ForceResettingStagesAndStageBoostCounter: () => void;
+  ): void;
+  IncrementingStageBoostCounter(valueAfter: number): void;
+  ForceResettingStagesAndStageBoostCounter(): void;
 }
 
 /**
