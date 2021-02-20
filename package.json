@@ -6,7 +6,6 @@
   "types": "dist/lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "postinstall": "npm run build",
     "start": "node index.js",
     "pretest": "npm run build",
     "test": "ts-node test/index.ts",
