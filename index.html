@@ -148,6 +148,7 @@ https://github.com/TypeStrong/typedoc-default-themes/blob/0fa4edd7ab0b45c7d33cf2
 				</a>
 				<pre><code class="language-shell"><span style="color: #000000">weedle &lt;maxNumIterations = 1000&gt; &lt;progressCheckInterval = floor(maxNumIterations / 100)&gt; &lt;continueOnSuccess = false&gt; &lt;divideProgressLogByInterval = false&gt;</span>
 </code></pre>
+				<p>Some systems require you to prefix the command with <code>npx</code>.</p>
 				<p>This will run up to <code>maxNumIterations</code> simulations, halting earlier if and only if team <code>A</code> wins and <code>!continueOnSuccess</code>.</p>
 				<p>It will log the elapsed time and current iteration (divided by <code>progressCheckInterval</code> if <code>divideProgressLogByInterval</code>) before every <code>progressCheckInterval</code> number of iterations;
 				you can set <code>progressCheckInterval = 0</code> to not have this happen, or to some sufficiently large number to have it occur only at step <code>0</code>.</p>
@@ -173,7 +174,8 @@ https://github.com/TypeStrong/typedoc-default-themes/blob/0fa4edd7ab0b45c7d33cf2
 				<p>Playback any run given its sequence of random numbers:</p>
 				<pre><code class="language-shell"><span style="color: #000000">pokemon-playback &lt;path-to-file&gt;</span>
 </code></pre>
-				<p>where <code>path-to-file</code> is the path to a requireable file which gives the array of randoms.</p>
+				<p>where <code>path-to-file</code> is the path to a requireable file which gives the array of randoms.
+				Some systems require you to prefix the command with <code>npx</code>.</p>
 				<p>If omitted, <code>path-to-file</code> defaults to an internal constant file, namely <a href="test/fail/1.rands.json"><code>test/fail/1.rands.json</code></a>.
 				While expected to remain for the life of the project, this should not be relied on programmatically.</p>
 			</div>
