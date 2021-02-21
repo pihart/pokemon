@@ -13,6 +13,12 @@ Simulates something to do with Pokemon Battle.
 npm i @mehra/pokemon
 ```
 
+If using the CLI commands and not using the abstract library, you generally want to do a global install instead:
+
+```shell
+npm i -g @mehra/pokemon
+```
+
 ## Links
 
 - [Documentation][docs]
