@@ -11,7 +11,11 @@ const {
 } = require("./dist/script");
 
 const parseOptions = () => {
-  let [, , filePath = path.join(__dirname, "test/fail/1.json")] = process.argv;
+  let [
+    ,
+    ,
+    filePath = path.join(__dirname, "test/fail/1.rands.json"),
+  ] = process.argv;
 
   console.log("Given options", {
     filePath,
