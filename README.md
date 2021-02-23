@@ -147,6 +147,6 @@ While expected to remain for the life of the project, this should not be relied 
 
 [`test/fail/1.rands.json`]: test/fail/1.rands.json
 [playback]: #playback
-[npm]: https://www.npmjs.com/package/@mehra/ts
-[source]: https://github.com/pihart/ts
-[docs]: https://pihart.github.io/ts
+[npm]: https://www.npmjs.com/package/@mehra/pokemon
+[source]: https://github.com/pihart/pokemon
+[docs]: https://pihart.github.io/pokemon
