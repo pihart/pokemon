@@ -1,6 +1,6 @@
 {
   "name": "@mehra/pokemon",
-  "version": "6.2.5",
+  "version": "6.2.6",
   "description": "I have no idea what this actually does",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
