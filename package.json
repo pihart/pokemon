@@ -22,7 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mehra/ts": "^4.3.0"
+    "@mehra/ts": "^5.0.1"
   },
   "devDependencies": {
     "@types/node": "^14.14.27",
