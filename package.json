@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^15.0.1",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.0.0",
     "typedoc-wrapper": "^4.0.4",
     "typescript": "^4.1.5"
   }
